@@ -2,6 +2,7 @@ package fz.exemple.aep.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDate;
 
@@ -14,7 +15,9 @@ public class Doacao {
     private String usuarioId;
     private String item;
     private int quantidade;
-    private LocalDate data_doacao;
+
+    @Field("data_doacao")
+    private LocalDate dataDoacao;
 
     public Doacao(){}
 
@@ -50,11 +53,11 @@ public class Doacao {
         this.quantidade = quantidade;
     }
 
-    public LocalDate getData_doacao() {
-        return data_doacao;
+    public LocalDate getDataDoacao() {
+        return dataDoacao;
     }
 
-    public void setData_doacao(LocalDate data_doacao) {
-        this.data_doacao = data_doacao;
+    public void setDataDoacao(LocalDate dataDoacao) {
+        this.dataDoacao = dataDoacao;
     }
 }
