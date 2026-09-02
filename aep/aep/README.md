@@ -2,8 +2,6 @@
 
 > Spring Boot 4.1.0 + Java 17 + MongoDB (`poc_doacoes`) — API REST para cadastrar doadores (`Usuario`) e doações de alimentos (`Doacao`).
 
-Repositório: **https://github.com/Maria-Doarda/Aep-6s** — branch deste README: **`Gabriel`**
-
 ---
 
 ## O que o projeto faz
@@ -70,24 +68,7 @@ java -version
    ```
 > No Windows, habilite **WSL 2** quando o instalador pedir. No Mac, aceite a permissão.
 
-### Passo 2 — Clonar o repositório (branch Gabriel)
-
-```bash
-git clone https://github.com/Maria-Doarda/Aep-6s.git
-cd Aep-6s
-git checkout Gabriel
-cd aep/aep
-# no Windows com espaço na pasta "Projetos Java", use aspas:
-# cd "C:\Users\SeuNome\Desktop\Projetos Java\AEP6S\aep\aep"
-```
-
-Verifique que existe `compose.yaml` e `pom.xml`:
-```bash
-dir        # Windows
-ls -la     # Mac/Linux
-```
-
-### Passo 3 — Subir o MongoDB
+### Passo 2 — Subir o MongoDB
 
 Na pasta `aep/aep` (onde está `compose.yaml`):
 
@@ -115,7 +96,7 @@ lsof -i :27017
 ```
 Pare outro Mongo ou use `docker compose down`.
 
-### Passo 4 — Build (compilar)
+### Passo 3 — Build (compilar)
 
 **Windows PowerShell:**
 ```powershell
@@ -132,7 +113,7 @@ Esperado: `BUILD SUCCESS`.
 
 > Primeira vez demora (baixa dependências). Próximas vezes é rápido.
 
-### Passo 5 — Rodar a aplicação
+### Passo 4 — Rodar a aplicação
 
 **Windows:**
 ```powershell
@@ -154,7 +135,7 @@ Started AepApplication in ... seconds
 
 Mantenha este terminal aberto. A API está em `http://localhost:8080`.
 
-### Passo 6 — Testar a API
+### Passo 5 — Testar a API
 
 Abra **outro terminal** e teste:
 
@@ -198,7 +179,7 @@ Erros esperados:
 - `400` → JSON inválido ou campo faltando (ex: `email` sem `@`, `quantidade: 0`)
 - `404` → ID não existe
 
-### Passo 7 — Parar
+### Passo 6 — Parar
 
 No terminal do `spring-boot:run`: `Ctrl + C`
 
@@ -265,11 +246,9 @@ aep/aep/
 ## Comandos rápidos
 
 ```bash
-# do zero (Windows)
-git clone https://github.com/Maria-Doarda/Aep-6s.git && cd Aep-6s && git checkout Gabriel && cd aep/aep
+# Windows (na pasta aep/aep)
 docker compose up -d && .\mvnw.cmd compile -DskipTests && .\mvnw.cmd spring-boot:run
 
-# do zero (Mac/Linux)
-git clone https://github.com/Maria-Doarda/Aep-6s.git && cd Aep-6s && git checkout Gabriel && cd aep/aep
+# Mac/Linux (na pasta aep/aep)
 docker compose up -d && ./mvnw compile -DskipTests && ./mvnw spring-boot:run
 ```
