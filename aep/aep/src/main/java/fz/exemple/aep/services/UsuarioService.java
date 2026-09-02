@@ -1,5 +1,9 @@
 package fz.exemple.aep.services;
 
+import fz.exemple.aep.dto.UsuarioCreateRequest;
+import fz.exemple.aep.dto.UsuarioResponse;
+import fz.exemple.aep.dto.UsuarioUpdateRequest;
+import fz.exemple.aep.mapper.UsuarioMapper;
 import fz.exemple.aep.models.Usuario;
 import fz.exemple.aep.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
@@ -16,29 +20,31 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public Usuario criar(Usuario usuario){
-        return usuarioRepository.save(usuario);
+    public UsuarioResponse criar(UsuarioCreateRequest request) {
+        Usuario usuario = UsuarioMapper.toEntity(request);
+        Usuario saved = usuarioRepository.save(usuario);
+        return UsuarioMapper.toResponse(saved);
     }
 
-    public List<Usuario> listarTodos(){
-        return usuarioRepository.findAll();
+    public List<UsuarioResponse> listarTodos() {
+        return UsuarioMapper.toResponseList(usuarioRepository.findAll());
     }
 
-    public Optional<Usuario> buscarPorId(String id){
-        return usuarioRepository.findById(id);
+    public Optional<UsuarioResponse> buscarPorId(String id) {
+        return usuarioRepository.findById(id)
+                .map(UsuarioMapper::toResponse);
     }
 
-    public Usuario atualizar(String id, Usuario dadosAtualizados){
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        usuario.setNome(dadosAtualizados.getNome());
-        usuario.setEmail(dadosAtualizados.getEmail());
-        usuario.setEnderecos(dadosAtualizados.getEnderecos());
-        return usuarioRepository.save(usuario);
-
+    public Optional<UsuarioResponse> atualizar(String id, UsuarioUpdateRequest request) {
+        return usuarioRepository.findById(id)
+                .map(existing -> {
+                    Usuario updated = UsuarioMapper.toEntity(request, existing);
+                    Usuario saved = usuarioRepository.save(updated);
+                    return UsuarioMapper.toResponse(saved);
+                });
     }
 
-    public void deletar(String id){
+    public void deletar(String id) {
         usuarioRepository.deleteById(id);
     }
 }

@@ -1,7 +1,10 @@
 package fz.exemple.aep.services;
 
+import fz.exemple.aep.dto.DoacaoCreateRequest;
+import fz.exemple.aep.dto.DoacaoResponse;
+import fz.exemple.aep.dto.DoacaoUpdateRequest;
+import fz.exemple.aep.mapper.DoacaoMapper;
 import fz.exemple.aep.models.Doacao;
-import fz.exemple.aep.models.Usuario;
 import fz.exemple.aep.repositories.DoacaoRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,35 +20,35 @@ public class DoacaoService {
         this.doacaoRepository = doacaoRepository;
     }
 
-    public Doacao criar(Doacao doacao){
-        return doacaoRepository.save(doacao);
+    public DoacaoResponse criar(DoacaoCreateRequest request) {
+        Doacao doacao = DoacaoMapper.toEntity(request);
+        Doacao saved = doacaoRepository.save(doacao);
+        return DoacaoMapper.toResponse(saved);
     }
 
-    public List<Doacao> listarTodos(){
-        return doacaoRepository.findAll();
+    public List<DoacaoResponse> listarTodos() {
+        return DoacaoMapper.toResponseList(doacaoRepository.findAll());
     }
 
-    public Optional<Doacao> buscarPorId(String id){
-        return doacaoRepository.findById(id);
+    public Optional<DoacaoResponse> buscarPorId(String id) {
+        return doacaoRepository.findById(id)
+                .map(DoacaoMapper::toResponse);
     }
 
-    public List<Doacao> listarPorUsuario(String usuarioId) {
-        return doacaoRepository.findByUsuarioId(usuarioId);
+    public List<DoacaoResponse> listarPorUsuario(String usuarioId) {
+        return DoacaoMapper.toResponseList(doacaoRepository.findByUsuarioId(usuarioId));
     }
 
-    public Doacao atualizar(String id, Doacao dadosAtualizados) {
-        Doacao doacao = doacaoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Doação não encontrada"));
-
-        doacao.setItem(dadosAtualizados.getItem());
-        doacao.setQuantidade(dadosAtualizados.getQuantidade());
-        doacao.setData_doacao(dadosAtualizados.getData_doacao());
-        doacao.setUsuarioId(dadosAtualizados.getUsuarioId());
-
-        return doacaoRepository.save(doacao);
+    public Optional<DoacaoResponse> atualizar(String id, DoacaoUpdateRequest request) {
+        return doacaoRepository.findById(id)
+                .map(existing -> {
+                    Doacao updated = DoacaoMapper.toEntity(request, existing);
+                    Doacao saved = doacaoRepository.save(updated);
+                    return DoacaoMapper.toResponse(saved);
+                });
     }
 
-    public void deletar(String id){
+    public void deletar(String id) {
         doacaoRepository.deleteById(id);
     }
 }

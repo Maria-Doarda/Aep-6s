@@ -1,0 +1,13 @@
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: aepmongojava2026_mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INIT_DB_DATABASE: poc_doacoes
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
