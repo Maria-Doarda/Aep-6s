@@ -3,7 +3,7 @@ package fz.exemple.aep.services;
 import fz.exemple.aep.dto.UsuarioCreateRequest;
 import fz.exemple.aep.dto.UsuarioResponse;
 import fz.exemple.aep.dto.UsuarioUpdateRequest;
-import fz.exemple.aep.mapper.UsuarioMapper;
+import fz.exemple.aep.UsuarioMapper;
 import fz.exemple.aep.models.Usuario;
 import fz.exemple.aep.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
