@@ -12,10 +12,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UsuarioController.class)
@@ -86,5 +89,79 @@ class UsuarioControllerTest {
                                 """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.nome").exists());
+    }
+
+    @Test
+    void deveListarTodosOsUsuarios() throws Exception {
+        var resposta = new UsuarioResponse("abc123", "Ana", "ana@teste.com", List.of());
+
+        when(usuarioService.listarTodos()).thenReturn(List.of(resposta));
+
+        mvc.perform(get("/api/usuarios"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value("abc123"))
+                .andExpect(jsonPath("$[0].nome").value("Ana"));
+    }
+
+    @Test
+    void deveBuscarUsuarioPorIdQuandoExistir() throws Exception {
+        var resposta = new UsuarioResponse("abc123", "Ana", "ana@teste.com", List.of());
+
+        when(usuarioService.buscarPorId("abc123")).thenReturn(Optional.of(resposta));
+
+        mvc.perform(get("/api/usuarios/abc123"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("abc123"));
+    }
+
+    @Test
+    void deveRetornar404AoBuscarUsuarioPorIdInexistente() throws Exception {
+        when(usuarioService.buscarPorId("xyz")).thenReturn(Optional.empty());
+
+        mvc.perform(get("/api/usuarios/xyz"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deveAtualizarUsuarioComDadosValidos() throws Exception {
+        var resposta = new UsuarioResponse("abc123", "Ana Nova", "ananova@teste.com", List.of());
+
+        when(usuarioService.atualizar(eq("abc123"), any())).thenReturn(Optional.of(resposta));
+
+        mvc.perform(put("/api/usuarios/abc123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "nome": "Ana Nova",
+                                  "email": "ananova@teste.com",
+                                  "enderecos": []
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nome").value("Ana Nova"));
+    }
+
+    @Test
+    void deveRetornar404AoAtualizarUsuarioInexistente() throws Exception {
+        when(usuarioService.atualizar(eq("xyz"), any())).thenReturn(Optional.empty());
+
+        mvc.perform(put("/api/usuarios/xyz")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "nome": "Ana",
+                                  "email": "ana@teste.com",
+                                  "enderecos": []
+                                }
+                                """))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deveDeletarUsuario() throws Exception {
+        mvc.perform(delete("/api/usuarios/abc123"))
+                .andExpect(status().isNoContent());
+
+        verify(usuarioService).deletar("abc123");
     }
 }
