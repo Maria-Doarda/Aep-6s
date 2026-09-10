@@ -1,4 +1,4 @@
-package fz.exemple.aep.mapper;
+package fz.exemple.aep;
 
 import fz.exemple.aep.dto.DoacaoCreateRequest;
 import fz.exemple.aep.dto.DoacaoResponse;
