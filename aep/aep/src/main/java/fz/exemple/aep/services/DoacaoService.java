@@ -3,11 +3,11 @@ package fz.exemple.aep.services;
 import fz.exemple.aep.dto.DoacaoCreateRequest;
 import fz.exemple.aep.dto.DoacaoResponse;
 import fz.exemple.aep.dto.DoacaoUpdateRequest;
-import fz.exemple.aep.mapper.DoacaoMapper;
+import fz.exemple.aep.DoacaoMapper;
 import fz.exemple.aep.models.Doacao;
 import fz.exemple.aep.repositories.DoacaoRepository;
 import org.springframework.stereotype.Service;
-
+import fz.exemple.aep.dto.ResumoResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,5 +50,25 @@ public class DoacaoService {
 
     public void deletar(String id) {
         doacaoRepository.deleteById(id);
+    }
+    public ResumoResponse resumo() {
+        List<Doacao> doacoes = doacaoRepository.findAll();
+
+        long totalDoacoes = doacoes.size();
+
+        int totalQuantidade = doacoes.stream()
+                .mapToInt(Doacao::getQuantidade)
+                .sum();
+
+        long itensDistintos = doacoes.stream()
+                .map(Doacao::getItem)
+                .distinct()
+                .count();
+
+        return new ResumoResponse(
+                totalDoacoes,
+                totalQuantidade,
+                itensDistintos
+        );
     }
 }
