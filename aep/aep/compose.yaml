@@ -5,7 +5,7 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INIT_DB_DATABASE: poc_doacoes
+      MONGO_INITDB_DATABASE: poc_doacoes
     volumes:
       - mongo-data:/data/db
 
