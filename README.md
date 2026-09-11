@@ -1,13 +1,31 @@
 # AEP6S — ODS 2 | CRUD de Doação de Alimentos
 
+![Java 17](https://img.shields.io/badge/Java-17-blue)
+![Spring Boot 4.1.0](https://img.shields.io/badge/Spring%20Boot-4.1.0-green)
+![MongoDB 7.0](https://img.shields.io/badge/MongoDB-7.0-green)
+![Tests passing](https://img.shields.io/badge/tests-55%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-95%25%20%28excl.%20CLI%29-brightgreen)
+![Build](https://img.shields.io/badge/build-mvn%20clean%20verify-blue)
+
 > Spring Boot 4.1.0 + Java 17 + MongoDB (`poc_doacoes`) — API REST para cadastrar doadores (`Usuario`) e doações de alimentos (`Doacao`).
+
+---
+
+## Problema, público e ODS 2
+
+**Problema:** o desperdício de alimentos convive com a insegurança alimentar nos centros urbanos — sobra comida de um lado e falta do outro por falta de um canal simples de doação.
+
+**Público (genérico):** doadores (pessoas e estabelecimentos), ONGs e bancos de alimentos que recebem e redistribuem as doações.
+
+**ODS 2 – Fome Zero e Agricultura Sustentável:** a PoC apoia as metas `2.1` (acesso a alimentos seguros e nutritivos) e `2.2` (combate à má-nutrição). Indicadores acompanhados pelo `GET /api/doacoes/resumo`: `totalDoacoes`, `totalQuantidade` e `itensDistintos`.
 
 ---
 
 ## O que o projeto faz
 
 - **Usuários (doadores):** `POST /api/usuarios` → `201 + Location`, `GET /api/usuarios`, `GET /api/usuarios/{id}`, `PUT /api/usuarios/{id}` → `200` ou `404`, `DELETE /api/usuarios/{id}` → `204` (idempotente)
-- **Doações:** `POST /api/doacoes`, `GET /api/doacoes`, `GET /api/doacoes/{id}`, `GET /api/doacoes/usuario/{usuarioId}`, `PUT /api/doacoes/{id}`, `DELETE /api/doacoes/{id}`
+- **Doações:** `POST /api/doacoes`, `GET /api/doacoes`, `GET /api/doacoes/resumo`, `GET /api/doacoes/{id}`, `GET /api/doacoes/usuario/{usuarioId}`, `PUT /api/doacoes/{id}`, `DELETE /api/doacoes/{id}`
+- **Terminal (sem HTML):** menu interativo no console (`cadastrar usuário`, `cadastrar doação`, `listar`) que roda junto com a API — ver `cli/CadastroCli.java`
 - Validação com `@Valid` → `400` se inválido, `404` se não encontrado (via `GlobalExceptionHandler`)
 - Sem autenticação (`config/SecurityConfig.java` → `permitAll`)
 - `Doacao.dataDoacao` (Java) é salvo como `data_doacao` no Mongo (`@Field`)
@@ -170,6 +188,14 @@ curl http://localhost:8080/api/doacoes
 curl http://localhost:8080/api/doacoes/usuario/SEU_ID_AQUI
 ```
 
+**6. Ver resumo (indicadores ODS 2):**
+```bash
+curl http://localhost:8080/api/doacoes/resumo
+# esperado: {"totalDoacoes":2,"totalQuantidade":15,"itensDistintos":2}
+```
+
+**Cadastro via terminal (sem HTML):** ao rodar `spring-boot:run`, um menu interativo aparece no mesmo terminal (`1 cadastrar usuário`, `2 cadastrar doação`, `3 listar usuários`, `4 doações por usuário`, `5 todas`, `0 sair do menu`). A API continua em `http://localhost:8080` enquanto o menu está aberto.
+
 **Testar no navegador/Postman:**
 - `GET http://localhost:8080/api/usuarios`
 - `GET http://localhost:8080/api/doacoes`
@@ -202,6 +228,7 @@ docker compose down -v     # apaga os dados (opcional, limpa poc_doacoes)
 | `DELETE` | `/api/usuarios/{id}` | `204` | Remove (idempotente) |
 | `POST` | `/api/doacoes` | `201 + Location` | Cria doação |
 | `GET` | `/api/doacoes` | `200` | Lista todas |
+| `GET` | `/api/doacoes/resumo` | `200` | Total, quantidade e itens distintos |
 | `GET` | `/api/doacoes/{id}` | `200` / `404` | Busca por ID |
 | `GET` | `/api/doacoes/usuario/{usuarioId}` | `200` | Lista por usuário |
 | `PUT` | `/api/doacoes/{id}` | `200` / `404` | Atualiza |
@@ -252,3 +279,17 @@ docker compose up -d && .\mvnw.cmd compile -DskipTests && .\mvnw.cmd spring-boot
 # Mac/Linux (na pasta aep/aep)
 docker compose up -d && ./mvnw compile -DskipTests && ./mvnw spring-boot:run
 ```
+
+---
+
+## Testes e cobertura
+
+```bash
+# na pasta aep/aep
+.\mvnw.cmd clean verify          # Windows (55 testes, falha se cobertura < 70%)
+./mvnw clean verify              # Mac/Linux
+```
+
+- Testes: JUnit 5 + Mockito + MockMvc (`src/test`: controllers, services, mappers, handler).
+- Cobertura: JaCoCo `0.8.12` com mínimo de 70% (`pom.xml` `jacoco-check`). O pacote interativo `cli/**` é excluído da medição (menu `Scanner` não tem teste unitário).
+- Relatório: abra `aep/aep/target/site/jacoco/index.html` após o `verify`. O log deve mostrar `All coverage checks have been met`.
