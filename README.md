@@ -28,7 +28,7 @@ O projeto atende doadores (pessoas e estabelecimentos) e ONGs e bancos de alimen
 - **Terminal (sem HTML):** menu interativo no console para cadastrar e listar, rodando junto com a API.
 - Dados inválidos retornam 400, IDs inexistentes retornam 404. Não precisa de login.
 
-Módulo Maven: `aep/aep` | API: `http://localhost:8080` | Mongo: `poc_doacoes` em `localhost:27017`
+Módulo Maven: `aep/aep` | API: `http://localhost:8081` | Mongo: `poc_doacoes` em `localhost:27017`
 
 ---
 
@@ -66,7 +66,7 @@ docker ps --filter name=aepmongojava2026_mongo   # STATUS deve ser Up
 ./mvnw spring-boot:run
 ```
 
-A API sobe em `http://localhost:8080`. Deixe esse terminal aberto. Na primeira vez o download das dependências demora; depois fica rápido.
+A API sobe em `http://localhost:8081`. Deixe esse terminal aberto. Na primeira vez o download das dependências demora; depois fica rápido.
 
 ---
 
@@ -76,20 +76,20 @@ Em outro terminal:
 
 ```bash
 # 1. Criar usuário (copie o id da resposta)
-curl -X POST http://localhost:8080/api/usuarios \
+curl -X POST http://localhost:8081/api/usuarios \
   -H "Content-Type: application/json" \
   -d "{\"nome\":\"Ana Silva\",\"email\":\"ana@teste.com\",\"enderecos\":[{\"rua\":\"Rua A, 123\",\"cidade\":\"Maringa\",\"estado\":\"PR\"}]}"
 
 # 2. Criar doação (troque SEU_ID_AQUI pelo id copiado)
-curl -X POST http://localhost:8080/api/doacoes \
+curl -X POST http://localhost:8081/api/doacoes \
   -H "Content-Type: application/json" \
   -d "{\"usuarioId\":\"SEU_ID_AQUI\",\"item\":\"Arroz\",\"quantidade\":10,\"dataDoacao\":\"2026-09-02\"}"
 
 # 3. Consultas
-curl http://localhost:8080/api/usuarios
-curl http://localhost:8080/api/doacoes
-curl http://localhost:8080/api/doacoes/usuario/SEU_ID_AQUI
-curl http://localhost:8080/api/doacoes/resumo
+curl http://localhost:8081/api/usuarios
+curl http://localhost:8081/api/doacoes
+curl http://localhost:8081/api/doacoes/usuario/SEU_ID_AQUI
+curl http://localhost:8081/api/doacoes/resumo
 # esperado: {"totalDoacoes":1,"totalQuantidade":10,"itensDistintos":1}
 ```
 

@@ -138,7 +138,7 @@ management.health.mongo.enabled=true
 management.endpoints.web.exposure.include=health
 ```
 
-Verificação: `curl http://localhost:8080/actuator/health` deve mostrar `"mongo": {"status":"UP"}`.
+Verificação: `curl http://localhost:8081/actuator/health` deve mostrar `"mongo": {"status":"UP"}`.
 
 **Verificação do bloco 1:**
 ```bash
@@ -149,7 +149,7 @@ docker ps --filter name=aepmongojava2026_mongo   # Up (healthy) após ~15s
 ./mvnw spring-boot:run                            # Mac/Linux
 # derrube o mongo para testar o handler:
 docker compose stop mongo
-curl http://localhost:8080/api/usuarios           # deve retornar 503 com {"erro":"MongoDB indisponível"}
+curl http://localhost:8081/api/usuarios           # deve retornar 503 com {"erro":"MongoDB indisponível"}
 docker compose start mongo
 ```
 
@@ -245,11 +245,11 @@ public class DoacaoController {
 
 **Verificação:**
 ```bash
-curl -X POST http://localhost:8080/api/usuarios -H "Content-Type: application/json" -d '{"nome":"Ana","email":"ana@teste.com","enderecos":[]}'
+curl -X POST http://localhost:8081/api/usuarios -H "Content-Type: application/json" -d '{"nome":"Ana","email":"ana@teste.com","enderecos":[]}'
 # copie o id
-curl -X POST http://localhost:8080/api/doacoes -H "Content-Type: application/json" -d '{"usuarioId":"ID","item":"Arroz","quantidade":10,"dataDoacao":"2026-09-02"}'
-curl -X POST http://localhost:8080/api/doacoes -H "Content-Type: application/json" -d '{"usuarioId":"ID","item":"Feijão","quantidade":5,"dataDoacao":"2026-09-02"}'
-curl http://localhost:8080/api/doacoes/resumo
+curl -X POST http://localhost:8081/api/doacoes -H "Content-Type: application/json" -d '{"usuarioId":"ID","item":"Arroz","quantidade":10,"dataDoacao":"2026-09-02"}'
+curl -X POST http://localhost:8081/api/doacoes -H "Content-Type: application/json" -d '{"usuarioId":"ID","item":"Feijão","quantidade":5,"dataDoacao":"2026-09-02"}'
+curl http://localhost:8081/api/doacoes/resumo
 # esperado: {"totalDoacoes":2,"totalQuantidade":15,"itensDistintos":2}
 ```
 

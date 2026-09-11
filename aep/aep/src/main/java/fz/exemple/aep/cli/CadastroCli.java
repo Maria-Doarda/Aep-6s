@@ -40,7 +40,7 @@ public class CadastroCli implements CommandLineRunner {
     public void run(String... args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println();
-        System.out.println("=== AEP6S terminal (API continua em http://localhost:8080) ===");
+        System.out.println("=== AEP6S terminal (API continua em http://localhost:8081) ===");
         try {
             while (true) {
                 imprimirMenu();
@@ -52,7 +52,7 @@ public class CadastroCli implements CommandLineRunner {
                     case "4" -> listarDoacoesPorUsuario(scanner);
                     case "5" -> listarTodasDoacoes();
                     case "0" -> {
-                        System.out.println("Saindo do menu. A API continua rodando em http://localhost:8080");
+                        System.out.println("Saindo do menu. A API continua rodando em http://localhost:8081");
                         return;
                     }
                     default -> System.out.println("Opcao invalida. Digite 0-5.");
