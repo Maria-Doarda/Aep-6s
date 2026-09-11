@@ -2,6 +2,7 @@ package fz.exemple.aep.controllers;
 
 import fz.exemple.aep.config.SecurityConfig;
 import fz.exemple.aep.dto.DoacaoResponse;
+import fz.exemple.aep.dto.ResumoResponse;
 import fz.exemple.aep.services.DoacaoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,6 +161,17 @@ class DoacaoControllerTest {
                                 }
                                 """))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deveRetornarResumo() throws Exception {
+        when(doacaoService.resumo()).thenReturn(new ResumoResponse(2L, 15, 2L));
+
+        mvc.perform(get("/api/doacoes/resumo"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalDoacoes").value(2))
+                .andExpect(jsonPath("$.totalQuantidade").value(15))
+                .andExpect(jsonPath("$.itensDistintos").value(2));
     }
 
     @Test

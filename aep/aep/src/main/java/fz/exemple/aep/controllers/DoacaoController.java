@@ -3,6 +3,7 @@ package fz.exemple.aep.controllers;
 import fz.exemple.aep.dto.DoacaoCreateRequest;
 import fz.exemple.aep.dto.DoacaoResponse;
 import fz.exemple.aep.dto.DoacaoUpdateRequest;
+import fz.exemple.aep.dto.ResumoResponse;
 import fz.exemple.aep.services.DoacaoService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,11 @@ public class DoacaoController {
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<DoacaoResponse>> listarPorUsuario(@PathVariable String usuarioId) {
         return ResponseEntity.ok(doacaoService.listarPorUsuario(usuarioId));
+    }
+
+    @GetMapping("/resumo")
+    public ResponseEntity<ResumoResponse> resumo() {
+        return ResponseEntity.ok(doacaoService.resumo());
     }
 
     @GetMapping("/{id}")
