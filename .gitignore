@@ -1,0 +1,14 @@
+# Build / artefatos
+target/
+*.class
+*.log
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# Sistema
+.DS_Store
+Thumbs.db
