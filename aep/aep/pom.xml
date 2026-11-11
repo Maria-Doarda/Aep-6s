@@ -117,9 +117,6 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
-							<excludes>
-								<exclude>fz/exemple/aep/cli/**</exclude>
-							</excludes>
 							<rules>
 								<rule>
 									<element>BUNDLE</element>
