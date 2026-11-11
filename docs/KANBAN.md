@@ -59,6 +59,8 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | C16 | Criar quadro de tarefas versionado (metodologia de trabalho) | Gabriel | 11/11 | `docs/KANBAN.md` |
 | C17 | Limpeza do repositório: remover `target/` e `.idea/` do versionamento, `.gitignore` na raiz, remover `HELP.md` e `TODO.md` obsoleto | Gabriel | 11/11 | commit `chore: limpa repositorio` |
 | C18 | Documentar versões e releases (`v1.0-entrega1`) | Gabriel | 11/11 | `docs/RELEASES.md`, tag `v1.0-entrega1` |
+| C19 | Documentação técnica completa — `docs/ARQUITETURA.md` (camadas, fluxo, erros) e `docs/MODELAGEM.md` (coleções, JSON, índices) *(era A1)* | Gabriel | 11/11 | `docs/ARQUITETURA.md`, `docs/MODELAGEM.md` |
+| C20 | Cobertura com o pacote `cli` incluído: `CadastroCli` com I/O injetável, `CadastroCliTest` (24 testes) e `ResponseDtosTest`; exclusão removida do `pom.xml` *(era B2)* | Gabriel | 11/11 | 87 testes, **99,3% de linhas**, 97,9% de branches |
 
 ---
 
@@ -66,7 +68,6 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 
 | # | Card | Responsável | Início | O que falta |
 |---|---|---|---|---|
-| A1 | Documentação técnica: `docs/ARQUITETURA.md` (camadas e fluxo) e `docs/MODELAGEM.md` (coleções, exemplos JSON, índices) | Gabriel | 11/11 | escrever os dois arquivos e linkar no README |
 | A2 | Vídeo da 2ª entrega (3 a 5 min) | Equipe | — | roteiro cronometrado, gravação e publicação |
 
 ---
@@ -76,7 +77,6 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | # | Card | Prioridade | Critério da AEP atendido |
 |---|---|---|---|
 | B1 | Fechar a 2ª entrega: tag `v2.0-entrega2` + Release no GitHub | Alta | Versão final identificável |
-| B2 | Remover a exclusão do pacote `cli` do JaCoCo (testar o CLI ou extrair a lógica de I/O) | Alta | Cobertura ≥ 70% sem ressalvas (hoje 63,9% com o `cli`) |
 | B3 | `resumo` via aggregation pipeline (`$group`) + endpoint `resumo/por-item` | Média | Uso efetivo de NoSQL |
 | B4 | Índices (`@Indexed` em `usuarioId`/`item`, `@CompoundIndex`) | Média | Modelagem NoSQL |
 | B5 | Filtros combinados em `GET /api/doacoes` (`item`, `usuarioId`, `dataInicio`) | Média | Evolução funcional |
@@ -104,6 +104,7 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | 10/09 | C10–C12 concluídos (CLI, `/resumo`, README final) |
 | 11/09 | C13 e C14 concluídos — **1ª entrega entregue** |
 | 11/11 | C15–C18 concluídos; A1–A2 em andamento; B1–B9 priorizados a partir da análise da 2ª entrega |
+| 11/11 | **A1 → C19** (documentação técnica) e **B2 → C20** (cobertura com o `cli`): 87 testes, 99,3% de linhas. Restam A2 (vídeo) e B1, B3–B9 |
 
 ---
 

@@ -38,10 +38,17 @@ cd aep/aep
 
 **Escopo:** conclusão da PoC com documentação técnica, quadro de tarefas e cobertura revisada.
 
-Preencher no fechamento da entrega com:
+Já concluído nesta entrega:
 
-- Funcionalidades novas em relação à `v1.0-entrega1` (ver cards `B3`–`B7` em `docs/KANBAN.md`)
-- Cobertura final (com o resultado de `.\mvnw.cmd clean verify`)
+| Item | Resultado |
+|---|---|
+| Documentação técnica | `docs/ARQUITETURA.md` + `docs/MODELAGEM.md` |
+| Quadro de tarefas | `docs/KANBAN.md`, 29 issues e board público no GitHub Projects |
+| Cobertura | **87 testes**, **99,3% de linhas** e **97,9% de branches**, sem excluir o pacote `cli` |
+
+Ainda falta preencher no fechamento:
+
+- Funcionalidades novas em relação à `v1.0-entrega1` (cards `B3`–`B7` em `docs/KANBAN.md`)
 - Link do vídeo de demonstração (3 a 5 min)
 
 **Tag:**
