@@ -123,6 +123,7 @@ Para parar: `Ctrl + C` no terminal da aplicação e `docker compose down` (adici
 O trabalho foi organizado por um quadro Kanban versionado junto ao código: cada card tem responsável, data e evidência (commit/PR). O histórico do quadro mostra a evolução da 1ª para a 2ª entrega.
 
 **Quadro:** [`docs/KANBAN.md`](docs/KANBAN.md) — colunas *A fazer · Em andamento · Concluído*, com backlog priorizado pelos critérios da AEP.
+**Board navegável:** [github.com/users/GnoattoGabriel/projects/1](https://github.com/users/GnoattoGabriel/projects/1) — cada card é uma issue do repositório, com label e milestone.
 
 Também usamos branches por integrante (`Gabriel`, `Sophiaa`, `main`) com Pull Requests para integrar cada etapa.
 
