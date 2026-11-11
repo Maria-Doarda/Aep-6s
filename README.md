@@ -5,8 +5,8 @@
 ![Java 17](https://img.shields.io/badge/Java-17-blue)
 ![Spring Boot 4.1.0](https://img.shields.io/badge/Spring%20Boot-4.1.0-green)
 ![MongoDB 7.0](https://img.shields.io/badge/MongoDB-7.0-green)
-![Tests passing](https://img.shields.io/badge/tests-55%20passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-95%25%20%28excl.%20CLI%29-brightgreen)
+![Tests passing](https://img.shields.io/badge/tests-87%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-99%25%20lines-brightgreen)
 ![Build](https://img.shields.io/badge/build-mvn%20clean%20verify-blue)
 
 > Spring Boot 4.1.0 + Java 17 + MongoDB (`poc_doacoes`) — API REST para cadastrar doadores (`Usuario`) e doações de alimentos (`Doacao`).
@@ -118,6 +118,17 @@ Para parar: `Ctrl + C` no terminal da aplicação e `docker compose down` (adici
 
 ---
 
+## Documentação técnica
+
+| Documento | Conteúdo |
+|---|---|
+| [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md) | camadas, fluxo de uma requisição, tratamento de erros, segurança, CLI e decisões de projeto |
+| [`docs/MODELAGEM.md`](docs/MODELAGEM.md) | coleções `usuarios` e `doacoes`, documentos JSON reais, relacionamento por `usuarioId`, subdocumento `enderecos[]` e índices |
+| [`docs/KANBAN.md`](docs/KANBAN.md) | quadro de tarefas e evolução do trabalho |
+| [`docs/RELEASES.md`](docs/RELEASES.md) | versões, tags e comando reproduzível da cobertura |
+
+---
+
 ## Metodologia e quadro de tarefas
 
 O trabalho foi organizado por um quadro Kanban versionado junto ao código: cada card tem responsável, data e evidência (commit/PR). O histórico do quadro mostra a evolução da 1ª para a 2ª entrega.
@@ -144,11 +155,19 @@ Detalhes, notas de release e comandos para reproduzir a cobertura: [`docs/RELEAS
 
 ```bash
 # na pasta aep/aep
-.\mvnw.cmd clean verify   # Windows — 55 testes, exige cobertura mínima de 70%
+.\mvnw.cmd clean verify   # Windows — 87 testes, exige cobertura mínima de 70%
 ./mvnw clean verify        # Mac/Linux
 ```
 
-Testes JUnit com Mockito e MockMvc (`src/test`: controllers, services, mappers e handler). A cobertura usa JaCoCo e o pacote do menu interativo (`cli`) fica de fora da medição. O relatório sai em `aep/aep/target/site/jacoco/index.html` e o log mostra `All coverage checks have been met`.
+Testes JUnit com Mockito e MockMvc (`src/test`: controllers, services, mappers, handler e CLI). A cobertura usa JaCoCo sobre **todo** o código (nenhum pacote excluído) e o gate mínimo é de 70% de linhas.
+
+| Métrica | Valor |
+|---|---|
+| Testes | **87** |
+| Linhas cobertas | **99,3%** (412/415) |
+| Branches cobertos | **97,9%** (46/47) |
+
+O relatório sai em `aep/aep/target/site/jacoco/index.html` e o log mostra `All coverage checks have been met`.
 
 ---
 
@@ -177,6 +196,8 @@ aep/aep/
     └── AepApplication.java
 
 docs/
-├── KANBAN.md    # quadro de tarefas e metodologia
-└── RELEASES.md  # versões, tags e evidência de cobertura
+├── KANBAN.md       # quadro de tarefas e metodologia
+├── RELEASES.md     # versões, tags e evidência de cobertura
+├── ARQUITETURA.md  # camadas, fluxo de requisição, erros e testes
+└── MODELAGEM.md    # coleções, documentos JSON, relacionamento e índices
 ```
