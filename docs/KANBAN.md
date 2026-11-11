@@ -8,6 +8,35 @@ Cards concluídos são empilhados na coluna mais à direita, do mais antigo para
 
 ---
 
+## Quadro no GitHub
+
+Este arquivo é a **fonte versionada** do quadro. O espelho navegável é o GitHub Projects:
+
+**Board:** https://github.com/users/GnoattoGabriel/projects/1
+
+Cada card também existe como **issue** no repositório, com label e milestone:
+
+| Card | Issue | Card | Issue | Card | Issue |
+|---|---|---|---|---|---|
+| C1 | [#6](https://github.com/Maria-Doarda/Aep-6s/issues/6) | C11 | [#16](https://github.com/Maria-Doarda/Aep-6s/issues/16) | A1 | [#24](https://github.com/Maria-Doarda/Aep-6s/issues/24) |
+| C2 | [#7](https://github.com/Maria-Doarda/Aep-6s/issues/7) | C12 | [#17](https://github.com/Maria-Doarda/Aep-6s/issues/17) | A2 | [#25](https://github.com/Maria-Doarda/Aep-6s/issues/25) |
+| C3 | [#8](https://github.com/Maria-Doarda/Aep-6s/issues/8) | C13 | [#18](https://github.com/Maria-Doarda/Aep-6s/issues/18) | B1 | [#26](https://github.com/Maria-Doarda/Aep-6s/issues/26) |
+| C4 | [#9](https://github.com/Maria-Doarda/Aep-6s/issues/9) | C14 | [#19](https://github.com/Maria-Doarda/Aep-6s/issues/19) | B2 | [#27](https://github.com/Maria-Doarda/Aep-6s/issues/27) |
+| C5 | [#10](https://github.com/Maria-Doarda/Aep-6s/issues/10) | C15 | [#20](https://github.com/Maria-Doarda/Aep-6s/issues/20) | B3 | [#28](https://github.com/Maria-Doarda/Aep-6s/issues/28) |
+| C6 | [#11](https://github.com/Maria-Doarda/Aep-6s/issues/11) | C16 | [#21](https://github.com/Maria-Doarda/Aep-6s/issues/21) | B4 | [#29](https://github.com/Maria-Doarda/Aep-6s/issues/29) |
+| C7 | [#12](https://github.com/Maria-Doarda/Aep-6s/issues/12) | C17 | [#22](https://github.com/Maria-Doarda/Aep-6s/issues/22) | B5 | [#30](https://github.com/Maria-Doarda/Aep-6s/issues/30) |
+| C8 | [#13](https://github.com/Maria-Doarda/Aep-6s/issues/13) | C18 | [#23](https://github.com/Maria-Doarda/Aep-6s/issues/23) | B6 | [#31](https://github.com/Maria-Doarda/Aep-6s/issues/31) |
+| C9 | [#14](https://github.com/Maria-Doarda/Aep-6s/issues/14) | | | B7 | [#32](https://github.com/Maria-Doarda/Aep-6s/issues/32) |
+| C10 | [#15](https://github.com/Maria-Doarda/Aep-6s/issues/15) | | | B8 | [#33](https://github.com/Maria-Doarda/Aep-6s/issues/33) |
+| | | | | B9 | [#34](https://github.com/Maria-Doarda/Aep-6s/issues/34) |
+
+**Labels:** `feat` (funcionalidade) · `test` (testes e cobertura) · `docs` · `chore` (infra/build)
+**Milestones:** `Entrega 1` (fechado) · `Entrega 2` (aberto)
+
+> O projeto é da conta `GnoattoGabriel` porque o repositório pertence a outra conta (`Maria-Doarda`) e o GitHub não permite vincular um Project a um repositório de dono diferente. O link acima é público e abre para qualquer pessoa.
+
+---
+
 ## Concluído
 
 | # | Card | Responsável | Data | Evidência |
