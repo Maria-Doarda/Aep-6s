@@ -118,6 +118,27 @@ Para parar: `Ctrl + C` no terminal da aplicação e `docker compose down` (adici
 
 ---
 
+## Metodologia e quadro de tarefas
+
+O trabalho foi organizado por um quadro Kanban versionado junto ao código: cada card tem responsável, data e evidência (commit/PR). O histórico do quadro mostra a evolução da 1ª para a 2ª entrega.
+
+**Quadro:** [`docs/KANBAN.md`](docs/KANBAN.md) — colunas *A fazer · Em andamento · Concluído*, com backlog priorizado pelos critérios da AEP.
+
+Também usamos branches por integrante (`Gabriel`, `Sophiaa`, `main`) com Pull Requests para integrar cada etapa.
+
+---
+
+## Versões e entregas
+
+| Tag | Entrega | O que contém |
+|---|---|---|
+| `v1.0-entrega1` | 1ª entrega | CRUD de usuários e doações, CLI, `GET /resumo`, 55 testes, cobertura ≥ 70%, README |
+| `v2.0-entrega2` | 2ª entrega | PoC final, documentação técnica, quadro de tarefas e cobertura revisada |
+
+Detalhes, notas de release e comandos para reproduzir a cobertura: [`docs/RELEASES.md`](docs/RELEASES.md). Para listar as tags: `git tag -l -n1`.
+
+---
+
 ## Testes e cobertura
 
 ```bash
@@ -147,9 +168,14 @@ Testes JUnit com Mockito e MockMvc (`src/test`: controllers, services, mappers e
 aep/aep/
 ├── pom.xml / compose.yaml / mvnw           # build, Mongo 7.0, wrapper
 ├── src/main/resources/application.properties
+├── src/test/java/fz/exemple/aep/           # testes (controllers, services, mappers, handler)
 └── src/main/java/fz/exemple/aep/
     ├── controllers/ services/ repositories/
     ├── models/ (Usuario, Doacao, Endereco)
     ├── dto/ mapper/ cli/ config/ exception/
     └── AepApplication.java
+
+docs/
+├── KANBAN.md    # quadro de tarefas e metodologia
+└── RELEASES.md  # versões, tags e evidência de cobertura
 ```
