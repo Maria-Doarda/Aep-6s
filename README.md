@@ -15,8 +15,7 @@
 
 ## Ambiente online
 
-A versão publicada abre direto na tela de registro: **<https://aep6s.onrender.com>**
-*(se o Render tiver gerado outro subdomínio no deploy, ajuste esta linha)*.
+A versão publicada abre direto na tela de registro: **<https://aep-6s-doacao-de-alimentos.onrender.com>**
 
 | O que | Endereço |
 |---|---|
