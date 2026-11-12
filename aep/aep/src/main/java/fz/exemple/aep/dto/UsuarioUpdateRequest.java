@@ -1,5 +1,6 @@
 package fz.exemple.aep.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -7,12 +8,15 @@ import java.util.List;
 
 public class UsuarioUpdateRequest {
 
-    @NotBlank @Size(max = 100)
+    @NotBlank(message = "não pode ficar em branco")
+    @Size(max = 100, message = "máximo de 100 caracteres")
     private String nome;
 
-    @NotBlank @Email
+    @NotBlank(message = "não pode ficar em branco")
+    @Email(message = "deve ser um endereço de e-mail válido")
     private String email;
 
+    @Valid
     private List<EnderecoDTO> enderecos;
 
     public UsuarioUpdateRequest() {}

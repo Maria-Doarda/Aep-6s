@@ -6,13 +6,13 @@ import java.time.LocalDate;
 
 public class DoacaoUpdateRequest {
 
-    @NotBlank
+    @NotBlank(message = "selecione o doador")
     private String usuarioId;
 
-    @NotBlank
+    @NotBlank(message = "não pode ficar em branco")
     private String item;
 
-    @Positive
+    @Positive(message = "deve ser maior que zero")
     private int quantidade;
 
     private LocalDate dataDoacao;

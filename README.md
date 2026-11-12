@@ -5,11 +5,29 @@
 ![Java 17](https://img.shields.io/badge/Java-17-blue)
 ![Spring Boot 4.1.0](https://img.shields.io/badge/Spring%20Boot-4.1.0-green)
 ![MongoDB 7.0](https://img.shields.io/badge/MongoDB-7.0-green)
-![Tests passing](https://img.shields.io/badge/tests-55%20passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-95%25%20%28excl.%20CLI%29-brightgreen)
+![Tests passing](https://img.shields.io/badge/tests-91%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-99%25%20lines%20%28all%20packages%29-brightgreen)
 ![Build](https://img.shields.io/badge/build-mvn%20clean%20verify-blue)
 
-> Spring Boot 4.1.0 + Java 17 + MongoDB (`poc_doacoes`) — API REST para cadastrar doadores (`Usuario`) e doações de alimentos (`Doacao`).
+> Spring Boot 4.1.0 + Java 17 + MongoDB (`poc_doacoes`) — API REST para cadastrar doadores (`Usuario`) e doações de alimentos (`Doacao`), com tela web servida pela própria aplicação.
+
+---
+
+## Ambiente online
+
+A versão publicada abre direto na tela de registro: **<https://aep6s.onrender.com>**
+*(se o Render tiver gerado outro subdomínio no deploy, ajuste esta linha)*.
+
+| O que | Endereço |
+|---|---|
+| Tela de doações | `/` |
+| API de doadores | `/api/usuarios` |
+| API de doações | `/api/doacoes` · resumo em `/api/doacoes/resumo` |
+| Status da aplicação | `/actuator/health` |
+
+- A **primeira visita** depois de um período sem acesso pode levar até um minuto: no plano gratuito do Render a aplicação hiberna e precisa acordar. A tela avisa quando isso acontece.
+- O perfil `demo` cria 2 doadores e 3 doações quando o banco está vazio, para a tela não abrir zerada.
+- Passo a passo completo do deploy (Atlas + Render + keep-alive): [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
 ---
 
@@ -25,7 +43,8 @@ O projeto atende doadores (pessoas e estabelecimentos) e ONGs e bancos de alimen
 
 - **Usuários (doadores):** criar, listar, buscar, atualizar e remover. Criar retorna 201 com o endereço do novo recurso; atualizar retorna 200 ou 404; remover retorna 204 e pode ser repetida sem erro.
 - **Doações:** criar, listar, buscar por ID, listar por usuário e ver o resumo. Mesmos códigos da lista acima.
-- **Terminal (sem HTML):** menu interativo no console para cadastrar e listar, rodando junto com a API.
+- **Tela web:** página única servida pela API (`/`) com os totais do resumo, cadastro de doadores com endereços dinâmicos, registro e exclusão de doações. Usa `fetch` nos mesmos endpoints — sem framework, sem build e sem CORS.
+- **Terminal (alternativa à tela):** menu interativo no console para cadastrar e listar, rodando junto com a API.
 - Dados inválidos retornam 400, IDs inexistentes retornam 404. Não precisa de login.
 
 Módulo Maven: `aep/aep` | API: `http://localhost:8081` | Mongo: `poc_doacoes` em `localhost:27017`
@@ -67,6 +86,24 @@ docker ps --filter name=aepmongojava2026_mongo   # STATUS deve ser Up
 ```
 
 A API sobe em `http://localhost:8081`. Deixe esse terminal aberto. Na primeira vez o download das dependências demora; depois fica rápido.
+
+### Variáveis de ambiente
+
+O padrão (`localhost:27017/poc_doacoes`) já funciona com o `docker compose` acima, então
+nada é obrigatório para rodar local. Para apontar para o MongoDB Atlas, use o `.env`:
+
+```bash
+cp .env.example .env        # PowerShell: Copy-Item .env.example .env
+```
+
+| Arquivo | Situação |
+|---|---|
+| `.env` | local, **ignorado pelo Git** — guarda a string real do Atlas |
+| `.env.example` | versionado — modelo com os nomes das chaves e placeholders |
+
+O Spring Boot não lê `.env` automaticamente. O arquivo é consumido pelo Docker
+(`docker run --env-file .env`) e, ao rodar pelo `mvnw`, pelas variáveis exportadas no shell —
+o trecho pronto está em [`docs/DEPLOY.md`](docs/DEPLOY.md#rodando-com-mvnw-e-o-env).
 
 ---
 
@@ -118,6 +155,18 @@ Para parar: `Ctrl + C` no terminal da aplicação e `docker compose down` (adici
 
 ---
 
+## Documentação técnica
+
+| Documento | Conteúdo |
+|---|---|
+| [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md) | camadas, fluxo de uma requisição, tratamento de erros, segurança, CLI e decisões de projeto |
+| [`docs/MODELAGEM.md`](docs/MODELAGEM.md) | coleções `usuarios` e `doacoes`, documentos JSON reais, relacionamento por `usuarioId`, subdocumento `enderecos[]` e índices |
+| [`docs/DEPLOY.md`](docs/DEPLOY.md) | passo a passo do ambiente online: Atlas, Render, variáveis, keep-alive e problemas comuns |
+| [`docs/KANBAN.md`](docs/KANBAN.md) | quadro de tarefas e evolução do trabalho |
+| [`docs/RELEASES.md`](docs/RELEASES.md) | versões, tags e comando reproduzível da cobertura |
+
+---
+
 ## Metodologia e quadro de tarefas
 
 O trabalho foi organizado por um quadro Kanban versionado junto ao código: cada card tem responsável, data e evidência (commit/PR). O histórico do quadro mostra a evolução da 1ª para a 2ª entrega.
@@ -144,11 +193,19 @@ Detalhes, notas de release e comandos para reproduzir a cobertura: [`docs/RELEAS
 
 ```bash
 # na pasta aep/aep
-.\mvnw.cmd clean verify   # Windows — 55 testes, exige cobertura mínima de 70%
+.\mvnw.cmd clean verify   # Windows — 91 testes, exige cobertura mínima de 70%
 ./mvnw clean verify        # Mac/Linux
 ```
 
-Testes JUnit com Mockito e MockMvc (`src/test`: controllers, services, mappers e handler). A cobertura usa JaCoCo e o pacote do menu interativo (`cli`) fica de fora da medição. O relatório sai em `aep/aep/target/site/jacoco/index.html` e o log mostra `All coverage checks have been met`.
+Testes JUnit com Mockito e MockMvc (`src/test`: controllers, services, mappers, handler e CLI). A cobertura usa JaCoCo sobre **todo** o código (nenhum pacote excluído) e o gate mínimo é de 70% de linhas.
+
+| Métrica | Valor |
+|---|---|
+| Testes | **91** |
+| Linhas cobertas | **99,3%** (454/457) |
+| Branches cobertos | **98,0%** (50/51) |
+
+O relatório sai em `aep/aep/target/site/jacoco/index.html` e o log mostra `All coverage checks have been met`.
 
 ---
 
@@ -166,17 +223,24 @@ Testes JUnit com Mockito e MockMvc (`src/test`: controllers, services, mappers e
 ## Estrutura do projeto
 
 ```
+.env.example                              # modelo das variáveis (copie para .env)
+Dockerfile / render.yaml / .dockerignore  # deploy no Render
+docs/
+├── KANBAN.md       # quadro de tarefas e metodologia
+├── RELEASES.md     # versões, tags e evidência de cobertura
+├── ARQUITETURA.md  # camadas, fluxo de requisição, erros e testes
+├── MODELAGEM.md    # coleções, documentos JSON, relacionamento e índices
+└── DEPLOY.md       # como publicar: Atlas, Render, keep-alive
+
 aep/aep/
 ├── pom.xml / compose.yaml / mvnw           # build, Mongo 7.0, wrapper
 ├── src/main/resources/application.properties
-├── src/test/java/fz/exemple/aep/           # testes (controllers, services, mappers, handler)
+├── src/main/resources/application-prod.properties
+├── src/main/resources/static/              # tela: index.html, style.css, app.js
+├── src/test/java/fz/exemple/aep/           # testes (controllers, services, mappers, handler, CLI, seed)
 └── src/main/java/fz/exemple/aep/
     ├── controllers/ services/ repositories/
     ├── models/ (Usuario, Doacao, Endereco)
     ├── dto/ mapper/ cli/ config/ exception/
     └── AepApplication.java
-
-docs/
-├── KANBAN.md    # quadro de tarefas e metodologia
-└── RELEASES.md  # versões, tags e evidência de cobertura
 ```

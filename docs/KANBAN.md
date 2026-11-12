@@ -28,7 +28,9 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | C8 | [#13](https://github.com/Maria-Doarda/Aep-6s/issues/13) | C18 | [#23](https://github.com/Maria-Doarda/Aep-6s/issues/23) | B6 | [#31](https://github.com/Maria-Doarda/Aep-6s/issues/31) |
 | C9 | [#14](https://github.com/Maria-Doarda/Aep-6s/issues/14) | | | B7 | [#32](https://github.com/Maria-Doarda/Aep-6s/issues/32) |
 | C10 | [#15](https://github.com/Maria-Doarda/Aep-6s/issues/15) | | | B8 | [#33](https://github.com/Maria-Doarda/Aep-6s/issues/33) |
-| | | | | B9 | [#34](https://github.com/Maria-Doarda/Aep-6s/issues/34) |
+| C19 | [#24](https://github.com/Maria-Doarda/Aep-6s/issues/24) | | | B9 | [#34](https://github.com/Maria-Doarda/Aep-6s/issues/34) |
+| C20 | [#27](https://github.com/Maria-Doarda/Aep-6s/issues/27) | | | C21 | [#36](https://github.com/Maria-Doarda/Aep-6s/issues/36) |
+| A3 | [#37](https://github.com/Maria-Doarda/Aep-6s/issues/37) | | | | |
 
 **Labels:** `feat` (funcionalidade) · `test` (testes e cobertura) · `docs` · `chore` (infra/build)
 **Milestones:** `Entrega 1` (fechado) · `Entrega 2` (aberto)
@@ -59,6 +61,10 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | C16 | Criar quadro de tarefas versionado (metodologia de trabalho) | Gabriel | 11/11 | `docs/KANBAN.md` |
 | C17 | Limpeza do repositório: remover `target/` e `.idea/` do versionamento, `.gitignore` na raiz, remover `HELP.md` e `TODO.md` obsoleto | Gabriel | 11/11 | commit `chore: limpa repositorio` |
 | C18 | Documentar versões e releases (`v1.0-entrega1`) | Gabriel | 11/11 | `docs/RELEASES.md`, tag `v1.0-entrega1` |
+| C19 | Documentação técnica completa — `docs/ARQUITETURA.md` (camadas, fluxo, erros) e `docs/MODELAGEM.md` (coleções, JSON, índices) *(era A1)* | Gabriel | 11/11 | `docs/ARQUITETURA.md`, `docs/MODELAGEM.md` |
+| C20 | Cobertura com o pacote `cli` incluído: `CadastroCli` com I/O injetável, `CadastroCliTest` (24 testes) e `ResponseDtosTest`; exclusão removida do `pom.xml` *(era B2)* | Gabriel | 11/11 | 87 testes, **99,3% de linhas**, 97,9% de branches |
+| C21 | Tela web servida pela API (dashboard, doadores e doações) + pacote de deploy: `Dockerfile`, `.dockerignore`, perfil `prod`, actuator, seed `demo`, `render.yaml` e `docs/DEPLOY.md` | Gabriel | 11/11 | `src/main/resources/static/`, `Dockerfile`, `render.yaml`, `docs/DEPLOY.md` · 91 testes, **99,3% de linhas** |
+| C22 | Corrigir a conexão do Mongo no Spring Boot 4: o prefixo virou `spring.mongodb` (o antigo `spring.data.mongodb` era ignorado e a app caía no banco `test`/`localhost`, o que derrubaria o deploy) + `.env`/`.env.example` versionados | Gabriel | 11/11 | `application.properties`, `application-prod.properties`, `.gitignore`, `.env.example`; conexão validada com o Atlas (seed 2/3 e resumo 3/23/3) |
 
 ---
 
@@ -66,8 +72,8 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 
 | # | Card | Responsável | Início | O que falta |
 |---|---|---|---|---|
-| A1 | Documentação técnica: `docs/ARQUITETURA.md` (camadas e fluxo) e `docs/MODELAGEM.md` (coleções, exemplos JSON, índices) | Gabriel | 11/11 | escrever os dois arquivos e linkar no README |
 | A2 | Vídeo da 2ª entrega (3 a 5 min) | Equipe | — | roteiro cronometrado, gravação e publicação |
+| A3 | Publicar o ambiente online (Atlas + Render) e validar o endereço público | Gabriel | 11/11 | cluster M0 criado e testado (string no `.env`); falta preencher `MONGO_URI` no Render e rodar o checklist de `docs/DEPLOY.md` |
 
 ---
 
@@ -76,7 +82,6 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | # | Card | Prioridade | Critério da AEP atendido |
 |---|---|---|---|
 | B1 | Fechar a 2ª entrega: tag `v2.0-entrega2` + Release no GitHub | Alta | Versão final identificável |
-| B2 | Remover a exclusão do pacote `cli` do JaCoCo (testar o CLI ou extrair a lógica de I/O) | Alta | Cobertura ≥ 70% sem ressalvas (hoje 63,9% com o `cli`) |
 | B3 | `resumo` via aggregation pipeline (`$group`) + endpoint `resumo/por-item` | Média | Uso efetivo de NoSQL |
 | B4 | Índices (`@Indexed` em `usuarioId`/`item`, `@CompoundIndex`) | Média | Modelagem NoSQL |
 | B5 | Filtros combinados em `GET /api/doacoes` (`item`, `usuarioId`, `dataInicio`) | Média | Evolução funcional |
@@ -92,7 +97,7 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 - Paginação e ordenação em `GET /api/usuarios` e `GET /api/doacoes`
 - Relatório de doações por período
 - Autenticação simples para doadores
-- Seed de dados para demonstração (`CommandLineRunner` no perfil `dev`)
+- Editar doador e doação pela tela (a API já expõe `PUT`)
 
 ---
 
@@ -104,6 +109,10 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | 10/09 | C10–C12 concluídos (CLI, `/resumo`, README final) |
 | 11/09 | C13 e C14 concluídos — **1ª entrega entregue** |
 | 11/11 | C15–C18 concluídos; A1–A2 em andamento; B1–B9 priorizados a partir da análise da 2ª entrega |
+| 11/11 | **A1 → C19** (documentação técnica) e **B2 → C20** (cobertura com o `cli`): 87 testes, 99,3% de linhas. Restam A2 (vídeo) e B1, B3–B9 |
+| 11/11 | **C21**: tela web + pacote de deploy prontos (Docker, perfil `prod`, seed `demo`, `render.yaml`, `docs/DEPLOY.md`). Abre **A3** (publicar no Render) e sai do backlog o seed de demonstração |
+| 11/11 | **C22**: no Spring Boot 4 o prefixo do Mongo é `spring.mongodb`; as propriedades antigas eram ignoradas e a app gravava no banco `test`. Corrigido nos dois arquivos de configuração e validado contra o Atlas. `.env` fica fora do Git, `.env.example` versionado |
+| 11/11 | **Merge da `main`** no `Gabriel` antes do PR: a equipe subiu o JaCoCo **0.8.16**, que elimina os avisos de `major version 69` do JDK 25 — **#34 resolvida**. `clean verify` segue com 91 testes e cobertura aprovada |
 
 ---
 
