@@ -73,7 +73,7 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | # | Card | Responsável | Início | O que falta |
 |---|---|---|---|---|
 | A2 | Vídeo da 2ª entrega (3 a 5 min) | Equipe | — | roteiro cronometrado, gravação e publicação |
-| A3 | Publicar o ambiente online (Atlas + Render) e validar o endereço público | Gabriel | 11/11 | cluster M0 criado e testado (string no `.env`); falta preencher `MONGO_URI` no Render e rodar o checklist de `docs/DEPLOY.md` |
+| A3 | Publicar o ambiente online (Atlas + Render) e validar o endereço público | Gabriel | 11/11 | no ar em `https://aep-6s-doacao-de-alimentos.onrender.com`; falta o redeploy com a correção do health check (`MongoPingHealthIndicator`) e o checklist final de `docs/DEPLOY.md` |
 
 ---
 
