@@ -125,6 +125,16 @@ E o painel mostra o estado **Live** com o endereço `https://aep-6s-doacao-de-al
 Abra `https://aep-6s-doacao-de-alimentos.onrender.com` no navegador. A tela deve mostrar o resumo com
 **3 doações / 23 itens / 3 tipos** — dados criados pelo perfil `demo` na primeira subida.
 
+O front tem duas páginas, servidas pela própria aplicação (sem build e sem CORS):
+
+| Endereço | Para quem | O que é |
+|---|---|---|
+| `/` (`index.html`) | quem administra | painel com menu lateral: painel, doadores, perfil do doador e doações (busca, filtros, edição, exportação CSV) |
+| `/doar.html` | quem vai doar | fluxo de doação em 4 etapas (item, quantidade, dados, revisão), sem listas nem dados de outros doadores |
+
+A página `/doar.html` ordena os itens pelos mais doados (lidos de `GET /api/doacoes`) e, se a API não
+responder, entra em modo demonstração (nada é salvo). `/doar.html?demo` força esse modo.
+
 Pelo terminal (PowerShell):
 
 ```powershell

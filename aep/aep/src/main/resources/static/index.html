@@ -15,135 +15,257 @@
 <body>
   <a class="skip" href="#conteudo">Ir para o conteúdo</a>
 
-  <header class="topbar">
+  <aside class="lateral">
     <p class="brand">
       <span class="brand__mark">AEP6S</span>
-      <span class="brand__meta">Engenharia de Software · 2026</span>
+      <span class="brand__meta">Painel de doações</span>
     </p>
-    <p class="status" id="api-status" data-state="connecting" role="status" aria-live="polite">
-      <span class="status__dot" aria-hidden="true"></span>
-      <span id="api-status-texto">Conectando à API…</span>
-    </p>
-  </header>
+
+    <nav class="nav" aria-label="Seções do sistema">
+      <a href="#/" data-nav="painel">Painel</a>
+      <a href="#/doadores" data-nav="doadores">Doadores</a>
+      <a href="#/doacoes" data-nav="doacoes">Doações</a>
+    </nav>
+
+    <div class="lateral__rodape">
+      <a class="lateral__doar" href="./doar.html">Página de doação ↗</a>
+      <p class="status" id="api-status" data-state="connecting" role="status" aria-live="polite">
+        <span class="status__dot" aria-hidden="true"></span>
+        <span id="api-status-texto">Conectando à API…</span>
+      </p>
+    </div>
+  </aside>
 
   <main id="conteudo">
-    <section class="intro">
-      <h1>Registro de doações de alimentos</h1>
-      <p class="intro__lead">
-        Cadastre quem doa e o que foi doado. Os totais abaixo vêm de
-        <code>GET /api/doacoes/resumo</code> e são recalculados a cada alteração.
-      </p>
-    </section>
-
-    <section class="summary" aria-label="Resumo das doações">
-      <div class="summary__metrics">
-        <div class="metric">
-          <span class="metric__valor" id="metric-doacoes">—</span>
-          <span class="metric__rotulo">doações registradas</span>
-        </div>
-        <div class="metric">
-          <span class="metric__valor" id="metric-quantidade">—</span>
-          <span class="metric__rotulo">itens recebidos</span>
-        </div>
-        <div class="metric">
-          <span class="metric__valor" id="metric-tipos">—</span>
-          <span class="metric__rotulo">tipos de item</span>
-        </div>
-      </div>
-      <p class="stamp" aria-hidden="true">ODS 2<br>Fome zero</p>
-    </section>
-
     <div class="fallback" id="falha" hidden>
       <p id="falha-texto">Não foi possível carregar os dados agora.</p>
       <button class="btn btn--ghost" type="button" id="tentar-novamente">Tentar novamente</button>
     </div>
 
-    <section class="block" aria-labelledby="titulo-doadores">
-      <header class="block__head">
-        <h2 id="titulo-doadores">Doadores</h2>
-        <p class="block__hint">Um doador pode ter mais de um endereço de entrega.</p>
+    <!-- ============ PAINEL ============ -->
+    <section class="view" data-view="painel" aria-labelledby="t-painel">
+      <header class="intro">
+        <h1 id="t-painel" tabindex="-1">Registro de doações de alimentos</h1>
+        <p class="intro__lead">
+          Acompanhe o que foi doado e por quem. Os totais vêm de
+          <code>GET /api/doacoes/resumo</code> e são recalculados a cada alteração.
+        </p>
+        <div class="intro__acoes">
+          <button class="btn btn--primary btn--auto" type="button" data-abrir="doacao">Nova doação</button>
+          <button class="btn btn--ghost" type="button" data-abrir="usuario">Novo doador</button>
+        </div>
       </header>
 
-      <div class="block__body">
-        <form class="ficha" id="form-usuario" novalidate>
-          <h3 class="ficha__titulo">Novo doador</h3>
-
-          <div class="field">
-            <label for="u-nome">Nome</label>
-            <input id="u-nome" data-campo="nome" type="text" maxlength="100" autocomplete="off" required>
-            <p class="field__error" data-erro="nome" hidden></p>
+      <section class="summary" aria-label="Resumo das doações">
+        <div class="summary__metrics">
+          <div class="metric">
+            <i class="metric__icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l2 5H4z"/><path d="M5 8l1.2 11a2 2 0 0 0 2 1.8h7.6a2 2 0 0 0 2-1.8L19 8"/><path d="M10 12v4M14 12v4"/></svg></i>
+            <span class="metric__valor" id="metric-doacoes">—</span>
+            <span class="metric__rotulo">doações registradas</span>
           </div>
-
-          <div class="field">
-            <label for="u-email">E-mail</label>
-            <input id="u-email" data-campo="email" type="email" autocomplete="off" required>
-            <p class="field__error" data-erro="email" hidden></p>
+          <div class="metric">
+            <i class="metric__icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></i>
+            <span class="metric__valor" id="metric-quantidade">—</span>
+            <span class="metric__rotulo">itens recebidos</span>
           </div>
+          <div class="metric">
+            <i class="metric__icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg></i>
+            <span class="metric__valor" id="metric-tipos">—</span>
+            <span class="metric__rotulo">tipos de item</span>
+          </div>
+          <div class="metric">
+            <i class="metric__icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></svg></i>
+            <span class="metric__valor" id="metric-doadores">—</span>
+            <span class="metric__rotulo">doadores cadastrados</span>
+          </div>
+        </div>
+        <p class="stamp" aria-hidden="true">ODS 2<br>Fome zero</p>
+      </section>
 
-          <fieldset class="enderecos">
-            <legend>Endereços <span class="enderecos__opcional">(opcional)</span></legend>
-            <div class="enderecos__lista" id="enderecos-lista"></div>
-            <button class="btn btn--ghost btn--sm" type="button" id="add-endereco">Adicionar endereço</button>
-          </fieldset>
+      <div class="grid-2">
+        <section class="block" aria-labelledby="t-top-itens">
+          <header class="block__head"><h2 id="t-top-itens">Itens mais doados</h2></header>
+          <ol class="barras" id="barras-itens"></ol>
+          <p class="vazio" id="itens-vazio">Registre doações para ver o ranking.</p>
+        </section>
 
-          <button class="btn btn--primary" type="submit" id="btn-usuario">Cadastrar doador</button>
-        </form>
+        <section class="block" aria-labelledby="t-por-mes">
+          <header class="block__head">
+            <h2 id="t-por-mes">Itens por mês</h2>
+            <p class="block__hint">Últimos 6 meses</p>
+          </header>
+          <ol class="barras" id="barras-meses"></ol>
+        </section>
+      </div>
 
+      <section class="block" aria-labelledby="t-recentes">
+        <header class="block__head">
+          <h2 id="t-recentes">Últimas doações</h2>
+          <a class="block__link" href="#/doacoes">Ver todas</a>
+        </header>
+        <div class="listagem">
+          <table class="tabela" id="tabela-recentes">
+            <thead>
+              <tr>
+                <th scope="col">Data</th>
+                <th scope="col">Item</th>
+                <th scope="col" class="col-num">Qtd.</th>
+                <th scope="col">Doador</th>
+              </tr>
+            </thead>
+            <tbody id="recentes-corpo"></tbody>
+          </table>
+          <p class="vazio" id="recentes-vazio">Nenhuma doação registrada ainda.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ DOADORES ============ -->
+    <section class="view" data-view="doadores" aria-labelledby="t-doadores" hidden>
+      <header class="intro intro--linha">
+        <div>
+          <h1 id="t-doadores" tabindex="-1">Doadores</h1>
+          <p class="intro__lead">Um doador pode ter mais de um endereço de entrega.</p>
+        </div>
+        <button class="btn btn--primary btn--auto" type="button" data-abrir="usuario">Novo doador</button>
+      </header>
+
+      <section class="block">
+        <div class="toolbar">
+          <div class="field">
+            <label for="busca-doador">Buscar por nome ou e-mail</label>
+            <input id="busca-doador" type="search" autocomplete="off" placeholder="Ex.: Maria">
+          </div>
+          <p class="toolbar__contagem" id="doadores-contagem" role="status"></p>
+        </div>
         <div class="listagem">
           <table class="tabela" id="tabela-usuarios">
             <thead>
               <tr>
                 <th scope="col">Doador</th>
                 <th scope="col">Endereços</th>
-                <th scope="col" class="col-acao">Ação</th>
+                <th scope="col" class="col-num">Doações</th>
+                <th scope="col" class="col-acao">Ações</th>
               </tr>
             </thead>
             <tbody id="usuarios-corpo"></tbody>
           </table>
-          <p class="vazio" id="usuarios-vazio">Nenhum doador cadastrado ainda. Use o formulário ao lado para começar.</p>
+          <p class="vazio" id="usuarios-vazio"></p>
         </div>
-      </div>
+      </section>
     </section>
 
-    <section class="block" aria-labelledby="titulo-doacoes">
-      <header class="block__head">
-        <h2 id="titulo-doacoes">Doações</h2>
-        <p class="block__hint">Escolha um doador já cadastrado e informe o item recebido.</p>
+    <!-- ============ PERFIL DO DOADOR ============ -->
+    <section class="view" data-view="perfil" aria-labelledby="t-perfil" hidden>
+      <p class="voltar"><a href="#/doadores">← Todos os doadores</a></p>
+
+      <div id="perfil-conteudo">
+        <header class="intro intro--linha">
+          <div>
+            <h1 id="t-perfil" tabindex="-1">Doador</h1>
+            <p class="intro__lead" id="perfil-email"></p>
+          </div>
+          <div class="intro__acoes">
+            <button class="btn btn--primary btn--auto" type="button" id="perfil-doar">Registrar doação</button>
+            <button class="btn btn--ghost" type="button" id="perfil-editar">Editar</button>
+            <button class="btn btn--ghost btn--perigo" type="button" id="perfil-excluir">Excluir</button>
+          </div>
+        </header>
+
+        <section class="summary summary--curto" aria-label="Resumo do doador">
+          <div class="summary__metrics summary__metrics--3">
+            <div class="metric">
+              <span class="metric__valor" id="perfil-doacoes">—</span>
+              <span class="metric__rotulo">doações</span>
+            </div>
+            <div class="metric">
+              <span class="metric__valor" id="perfil-quantidade">—</span>
+              <span class="metric__rotulo">itens doados</span>
+            </div>
+            <div class="metric">
+              <span class="metric__valor" id="perfil-ultima">—</span>
+              <span class="metric__rotulo">última doação</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="grid-2 grid-2--perfil">
+          <section class="block" aria-labelledby="t-perfil-enderecos">
+            <header class="block__head"><h2 id="t-perfil-enderecos">Endereços</h2></header>
+            <ul class="lista-simples" id="perfil-enderecos"></ul>
+          </section>
+
+          <section class="block" aria-labelledby="t-perfil-hist">
+            <header class="block__head"><h2 id="t-perfil-hist">Histórico de doações</h2></header>
+            <div class="listagem">
+              <table class="tabela" id="tabela-perfil">
+                <thead>
+                  <tr>
+                    <th scope="col">Data</th>
+                    <th scope="col">Item</th>
+                    <th scope="col" class="col-num">Qtd.</th>
+                    <th scope="col" class="col-acao">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="perfil-corpo"></tbody>
+              </table>
+              <p class="vazio" id="perfil-vazio">Este doador ainda não tem doações registradas.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <p class="vazio vazio--solo" id="perfil-naoachado" hidden>
+        Doador não encontrado. Ele pode ter sido removido.
+      </p>
+    </section>
+
+    <!-- ============ DOAÇÕES ============ -->
+    <section class="view" data-view="doacoes" aria-labelledby="t-doacoes" hidden>
+      <header class="intro intro--linha">
+        <div>
+          <h1 id="t-doacoes" tabindex="-1">Doações</h1>
+          <p class="intro__lead">Filtre, edite ou exporte as doações registradas.</p>
+        </div>
+        <button class="btn btn--primary btn--auto" type="button" data-abrir="doacao">Nova doação</button>
       </header>
 
-      <div class="block__body">
-        <form class="ficha" id="form-doacao" novalidate>
-          <h3 class="ficha__titulo">Nova doação</h3>
-
+      <section class="block">
+        <div class="toolbar toolbar--filtros">
           <div class="field">
-            <label for="d-usuario">Doador</label>
-            <select id="d-usuario" data-campo="usuarioId" required>
-              <option value="">Selecione um doador</option>
+            <label for="f-item">Item</label>
+            <input id="f-item" type="search" autocomplete="off" placeholder="Arroz, leite…">
+          </div>
+          <div class="field">
+            <label for="f-doador">Doador</label>
+            <select id="f-doador"><option value="">Todos</option></select>
+          </div>
+          <div class="field">
+            <label for="f-de">De</label>
+            <input id="f-de" type="date">
+          </div>
+          <div class="field">
+            <label for="f-ate">Até</label>
+            <input id="f-ate" type="date">
+          </div>
+          <div class="field">
+            <label for="f-ordem">Ordenar por</label>
+            <select id="f-ordem">
+              <option value="data-desc">Data (mais recente)</option>
+              <option value="data-asc">Data (mais antiga)</option>
+              <option value="qtd-desc">Maior quantidade</option>
+              <option value="item-asc">Item (A–Z)</option>
             </select>
-            <p class="field__error" data-erro="usuarioId" hidden></p>
           </div>
+        </div>
 
-          <div class="field">
-            <label for="d-item">Item</label>
-            <input id="d-item" data-campo="item" type="text" maxlength="80" placeholder="Arroz, feijão, leite…" autocomplete="off" required>
-            <p class="field__error" data-erro="item" hidden></p>
+        <div class="toolbar toolbar--rodape">
+          <p class="toolbar__contagem" id="doacoes-contagem" role="status"></p>
+          <div class="toolbar__botoes">
+            <button class="btn btn--ghost btn--sm" type="button" id="f-limpar">Limpar filtros</button>
+            <button class="btn btn--ghost btn--sm" type="button" id="exportar-csv">Exportar CSV</button>
           </div>
-
-          <div class="field-row">
-            <div class="field">
-              <label for="d-quantidade">Quantidade</label>
-              <input id="d-quantidade" data-campo="quantidade" type="number" min="1" step="1" value="1" required>
-              <p class="field__error" data-erro="quantidade" hidden></p>
-            </div>
-            <div class="field">
-              <label for="d-data">Data</label>
-              <input id="d-data" data-campo="dataDoacao" type="date" required>
-              <p class="field__error" data-erro="dataDoacao" hidden></p>
-            </div>
-          </div>
-
-          <button class="btn btn--primary" type="submit" id="btn-doacao">Registrar doação</button>
-        </form>
+        </div>
 
         <div class="listagem">
           <table class="tabela" id="tabela-doacoes">
@@ -153,14 +275,14 @@
                 <th scope="col">Item</th>
                 <th scope="col" class="col-num">Qtd.</th>
                 <th scope="col">Doador</th>
-                <th scope="col" class="col-acao">Ação</th>
+                <th scope="col" class="col-acao">Ações</th>
               </tr>
             </thead>
             <tbody id="doacoes-corpo"></tbody>
           </table>
-          <p class="vazio" id="doacoes-vazio">Nenhuma doação registrada ainda.</p>
+          <p class="vazio" id="doacoes-vazio"></p>
         </div>
-      </div>
+      </section>
     </section>
 
     <footer class="rodape">
@@ -186,7 +308,7 @@
               <tr><td><code>POST</code></td><td><code>/api/doacoes</code></td><td>registra uma doação</td></tr>
               <tr><td><code>GET</code></td><td><code>/api/doacoes/{id}</code></td><td>busca uma doação</td></tr>
               <tr><td><code>GET</code></td><td><code>/api/doacoes/usuario/{usuarioId}</code></td><td>doações de um doador</td></tr>
-              <tr><td><code>GET</code></td><td><code>/api/doacoes/resumo</code></td><td>totais exibidos acima</td></tr>
+              <tr><td><code>GET</code></td><td><code>/api/doacoes/resumo</code></td><td>totais do painel</td></tr>
               <tr><td><code>PUT</code></td><td><code>/api/doacoes/{id}</code></td><td>atualiza uma doação</td></tr>
               <tr><td><code>DELETE</code></td><td><code>/api/doacoes/{id}</code></td><td>remove uma doação</td></tr>
             </tbody>
@@ -199,6 +321,77 @@
       </details>
     </footer>
   </main>
+
+  <!-- ============ DIÁLOGO: DOADOR ============ -->
+  <dialog class="modal" id="dlg-usuario" aria-labelledby="dlg-usuario-titulo">
+    <form class="ficha" id="form-usuario" novalidate>
+      <h2 class="ficha__titulo" id="dlg-usuario-titulo">Novo doador</h2>
+
+      <div class="field">
+        <label for="u-nome">Nome</label>
+        <input id="u-nome" data-campo="nome" type="text" maxlength="100" autocomplete="off" required>
+        <p class="field__error" data-erro="nome" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="u-email">E-mail</label>
+        <input id="u-email" data-campo="email" type="email" autocomplete="off" required>
+        <p class="field__error" data-erro="email" hidden></p>
+      </div>
+
+      <fieldset class="enderecos">
+        <legend>Endereços <span class="enderecos__opcional">(opcional)</span></legend>
+        <div class="enderecos__lista" id="enderecos-lista"></div>
+        <button class="btn btn--ghost btn--sm" type="button" id="add-endereco">Adicionar endereço</button>
+      </fieldset>
+
+      <div class="modal__acoes">
+        <button class="btn btn--ghost" type="button" data-fechar>Cancelar</button>
+        <button class="btn btn--primary btn--auto" type="submit" id="btn-usuario">Cadastrar doador</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ============ DIÁLOGO: DOAÇÃO ============ -->
+  <dialog class="modal" id="dlg-doacao" aria-labelledby="dlg-doacao-titulo">
+    <form class="ficha" id="form-doacao" novalidate>
+      <h2 class="ficha__titulo" id="dlg-doacao-titulo">Nova doação</h2>
+
+      <div class="field">
+        <label for="d-usuario">Doador</label>
+        <select id="d-usuario" data-campo="usuarioId" required>
+          <option value="">Selecione um doador</option>
+        </select>
+        <p class="field__error" data-erro="usuarioId" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="d-item">Item</label>
+        <input id="d-item" data-campo="item" type="text" maxlength="80" list="itens-sugeridos"
+               placeholder="Arroz, feijão, leite…" autocomplete="off" required>
+        <datalist id="itens-sugeridos"></datalist>
+        <p class="field__error" data-erro="item" hidden></p>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="d-quantidade">Quantidade</label>
+          <input id="d-quantidade" data-campo="quantidade" type="number" min="1" step="1" value="1" required>
+          <p class="field__error" data-erro="quantidade" hidden></p>
+        </div>
+        <div class="field">
+          <label for="d-data">Data</label>
+          <input id="d-data" data-campo="dataDoacao" type="date" required>
+          <p class="field__error" data-erro="dataDoacao" hidden></p>
+        </div>
+      </div>
+
+      <div class="modal__acoes">
+        <button class="btn btn--ghost" type="button" data-fechar>Cancelar</button>
+        <button class="btn btn--primary btn--auto" type="submit" id="btn-doacao">Registrar doação</button>
+      </div>
+    </form>
+  </dialog>
 
   <p class="aviso-lento" id="aviso-lento" role="status" hidden>
     Acordando a API… o primeiro acesso pode levar até um minuto.

@@ -235,7 +235,7 @@ aep/aep/
 ├── pom.xml / compose.yaml / mvnw           # build, Mongo 7.0, wrapper
 ├── src/main/resources/application.properties
 ├── src/main/resources/application-prod.properties
-├── src/main/resources/static/              # tela: index.html, style.css, app.js
+├── src/main/resources/static/              # painel: index.html, style.css, app.js · doação: doar.html, doar.css, doar.js
 ├── src/test/java/fz/exemple/aep/           # testes (controllers, services, mappers, handler, CLI, seed)
 └── src/main/java/fz/exemple/aep/
     ├── controllers/ services/ repositories/

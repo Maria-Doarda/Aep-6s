@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doe alimentos — AEP6S</title>
+  <meta name="description" content="Registre uma doação de alimentos em menos de dois minutos. Projeto AEP, Objetivo de Desenvolvimento Sustentável 2: Fome Zero.">
+  <meta name="theme-color" content="#2c6e49">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Bitter:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./doar.css">
+  <script type="module" src="./doar.js"></script>
+</head>
+<body>
+  <a class="skip" href="#doar">Ir para o formulário</a>
+
+  <header class="top">
+    <p class="brand"><span class="brand__mark">AEP6S</span><span class="brand__meta">Fome Zero</span></p>
+    <a class="top__link" href="./index.html">Painel</a>
+  </header>
+
+  <div class="faixa" id="faixa-demo" role="status" hidden>
+    Modo demonstração: a API não respondeu, então nada será salvo.
+  </div>
+
+  <section class="hero" aria-labelledby="titulo">
+    <div class="hero__texto">
+      <p class="eyebrow">Doação de alimentos</p>
+      <h1 id="titulo">Doe alimentos. Cada item ajuda a combater a fome.</h1>
+      <p class="hero__lede">Escolha o que vai doar, diga quanto e confirme. Leva cerca de dois minutos.</p>
+      <ul class="selos" aria-label="Por que confiar">
+        <li>Leva 2 minutos</li>
+        <li>Sem criar senha</li>
+        <li>Seus dados ficam protegidos</li>
+      </ul>
+    </div>
+
+    <div class="hero__arte" aria-hidden="true">
+      <span class="blob"></span>
+      <svg class="cesta" viewBox="0 0 320 280" width="320" height="280" focusable="false">
+        <!-- alça -->
+        <path d="M82 128c0-78 156-78 156 0" fill="none" stroke="#8a5a14" stroke-width="12" stroke-linecap="round"/>
+        <!-- itens -->
+        <path d="M222 92c10-30 30-44 52-50-4 26-18 46-52 50z" fill="#2c6e49"/>
+        <path d="M222 92c10-30 30-44 52-50" fill="none" stroke="#1d4e33" stroke-width="3" stroke-linecap="round"/>
+        <rect x="108" y="64" width="86" height="58" rx="29" fill="#e0a43a"/>
+        <path d="M128 78l14 14M152 70l14 14M174 78l14 14" stroke="#b9791b" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="206" cy="104" r="34" fill="#c0463a"/>
+        <path d="M206 72c0-10 6-18 14-20" fill="none" stroke="#5b3a14" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="190" cy="94" rx="8" ry="12" fill="#fff" opacity=".22" transform="rotate(25 190 94)"/>
+        <path d="M120 128l22-66c2-6 10-6 12 0l6 66z" fill="#e8742c"/>
+        <path d="M134 56c-6-14-2-24 6-28 2 12 0 20-6 28zM144 54c4-14 12-20 22-20-2 12-10 18-22 20z" fill="#2c6e49"/>
+        <!-- cesta -->
+        <path d="M54 130h212l-22 112c-3 16-17 26-33 26H109c-16 0-30-10-33-26z" fill="#c98a1c"/>
+        <path d="M54 130h212" stroke="#8a5a14" stroke-width="10" stroke-linecap="round"/>
+        <path d="M82 148l18 112M124 148l8 120M166 148v122M208 148l-8 120M250 148l-18 112" stroke="#a66f12" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+        <path d="M66 174h188M72 208h176M82 240h156" stroke="#a66f12" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+      </svg>
+      <p class="carimbo">ODS 2<br>Fome zero</p>
+    </div>
+  </section>
+
+  <main id="doar" class="palco" tabindex="-1">
+    <div class="cartao" id="cartao">
+      <ol class="trilha" id="trilha" aria-label="Etapas da doação">
+        <li data-passo="1"><span class="trilha__bola">1</span><span class="trilha__nome">Item</span></li>
+        <li data-passo="2"><span class="trilha__bola">2</span><span class="trilha__nome">Quantidade</span></li>
+        <li data-passo="3"><span class="trilha__bola">3</span><span class="trilha__nome">Você</span></li>
+        <li data-passo="4"><span class="trilha__bola">4</span><span class="trilha__nome">Revisão</span></li>
+      </ol>
+      <p class="sr-only" id="anuncio" role="status" aria-live="polite"></p>
+
+      <form id="form" novalidate>
+        <!-- ETAPA 1 -->
+        <fieldset class="passo" data-passo="1">
+          <legend tabindex="-1">O que você quer doar?</legend>
+          <p class="ajuda">Escolha um item. Se não estiver na lista, use “Outro”.</p>
+
+          <div class="itens" id="itens">
+          </div>
+
+          <div class="campo" id="campo-outro" hidden>
+            <label for="outro">Qual item?</label>
+            <input id="outro" type="text" maxlength="80" autocomplete="off" placeholder="Ex.: farinha de trigo">
+          </div>
+          <p class="erro" id="erro-item" role="alert" hidden></p>
+        </fieldset>
+
+        <!-- ETAPA 2 -->
+        <fieldset class="passo" data-passo="2" hidden>
+          <legend tabindex="-1">Quanto e quando?</legend>
+
+          <div class="campo">
+            <label for="qtd">Quantidade</label>
+            <div class="stepper" role="group" aria-label="Quantidade">
+              <button type="button" id="menos" aria-label="Diminuir quantidade">−</button>
+              <input id="qtd" type="number" inputmode="numeric" min="1" max="999" step="1" value="1" aria-describedby="ajuda-qtd erro-qtd">
+              <button type="button" id="mais" aria-label="Aumentar quantidade">+</button>
+            </div>
+            <p class="ajuda" id="ajuda-qtd">Em unidades ou quilos, como preferir.</p>
+            <p class="erro" id="erro-qtd" role="alert" hidden></p>
+          </div>
+
+          <div class="campo">
+            <label for="data">Data da doação</label>
+            <input id="data" type="date" aria-describedby="erro-data">
+            <p class="erro" id="erro-data" role="alert" hidden></p>
+          </div>
+        </fieldset>
+
+        <!-- ETAPA 3 -->
+        <fieldset class="passo" data-passo="3" hidden>
+          <legend tabindex="-1">Quem está doando?</legend>
+          <p class="ajuda">Usamos só para registrar a doação em seu nome.</p>
+
+          <p class="lembrado" id="lembrado" hidden>
+            <span id="lembrado-texto"></span>
+            <button type="button" class="texto-link" id="nao-sou-eu">Não sou eu</button>
+          </p>
+
+          <div class="campo">
+            <label for="nome">Nome</label>
+            <input id="nome" type="text" maxlength="100" autocomplete="name" aria-describedby="erro-nome">
+            <p class="erro" id="erro-nome" role="alert" hidden></p>
+          </div>
+
+          <div class="campo">
+            <label for="email">E-mail</label>
+            <input id="email" type="email" autocomplete="email" inputmode="email" aria-describedby="erro-email">
+            <p class="erro" id="erro-email" role="alert" hidden></p>
+          </div>
+        </fieldset>
+
+        <!-- ETAPA 4 -->
+        <fieldset class="passo" data-passo="4" hidden>
+          <legend tabindex="-1">Confirme sua doação</legend>
+          <dl class="resumo">
+            <div><dt>Item</dt><dd id="r-item"></dd><button type="button" class="texto-link" data-editar="1">Alterar</button></div>
+            <div><dt>Quantidade</dt><dd id="r-qtd"></dd><button type="button" class="texto-link" data-editar="2">Alterar</button></div>
+            <div><dt>Data</dt><dd id="r-data"></dd><button type="button" class="texto-link" data-editar="2">Alterar</button></div>
+            <div><dt>Em nome de</dt><dd id="r-nome"></dd><button type="button" class="texto-link" data-editar="3">Alterar</button></div>
+          </dl>
+          <p class="erro erro--geral" id="erro-geral" role="alert" hidden></p>
+          <p class="aviso-lento" id="aviso-lento" role="status" hidden>
+            Estamos acordando o servidor, pode levar até 1 minuto. Não feche esta página.
+          </p>
+        </fieldset>
+
+        <div class="acoes">
+          <button type="button" class="btn btn--sec" id="voltar" hidden>Voltar</button>
+          <button type="submit" class="btn btn--pri" id="avancar">Continuar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- SUCESSO -->
+    <section class="cartao sucesso" id="sucesso" aria-labelledby="sucesso-titulo" hidden>
+      <svg class="sucesso__check" viewBox="0 0 72 72" width="72" height="72" aria-hidden="true" focusable="false">
+        <circle cx="36" cy="36" r="33" fill="none" stroke="#2c6e49" stroke-width="4"/>
+        <path d="M21 37l11 11 20-23" fill="none" stroke="#2c6e49" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h2 id="sucesso-titulo" tabindex="-1">Doação registrada!</h2>
+      <p class="sucesso__texto" id="sucesso-texto"></p>
+
+      <div class="recibo">
+        <p class="recibo__linha"><span>Item</span><strong id="s-item"></strong></p>
+        <p class="recibo__linha"><span>Quantidade</span><strong id="s-qtd"></strong></p>
+        <p class="recibo__linha"><span>Data</span><strong id="s-data"></strong></p>
+        <p class="recibo__linha"><span>Código</span><strong id="s-codigo"></strong></p>
+        <p class="recibo__selo">ODS 2 · Fome zero</p>
+      </div>
+
+      <p class="sucesso__impacto" id="sucesso-impacto" hidden></p>
+
+      <div class="acoes acoes--centro">
+        <button type="button" class="btn btn--sec" id="compartilhar">Compartilhar</button>
+        <button type="button" class="btn btn--pri" id="doar-de-novo">Doar outro item</button>
+      </div>
+    </section>
+
+    <p class="impacto" id="impacto" hidden></p>
+  </main>
+
+  <footer class="rodape">
+    <p>Projeto AEP · Objetivo de Desenvolvimento Sustentável 2: Fome Zero e Agricultura Sustentável.</p>
+  </footer>
+</body>
+</html>
