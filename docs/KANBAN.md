@@ -112,6 +112,7 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | 11/11 | **A1 → C19** (documentação técnica) e **B2 → C20** (cobertura com o `cli`): 87 testes, 99,3% de linhas. Restam A2 (vídeo) e B1, B3–B9 |
 | 11/11 | **C21**: tela web + pacote de deploy prontos (Docker, perfil `prod`, seed `demo`, `render.yaml`, `docs/DEPLOY.md`). Abre **A3** (publicar no Render) e sai do backlog o seed de demonstração |
 | 11/11 | **C22**: no Spring Boot 4 o prefixo do Mongo é `spring.mongodb`; as propriedades antigas eram ignoradas e a app gravava no banco `test`. Corrigido nos dois arquivos de configuração e validado contra o Atlas. `.env` fica fora do Git, `.env.example` versionado |
+| 11/11 | **Merge da `main`** no `Gabriel` antes do PR: a equipe subiu o JaCoCo **0.8.16**, que elimina os avisos de `major version 69` do JDK 25 — **#34 resolvida**. `clean verify` segue com 91 testes e cobertura aprovada |
 
 ---
 
