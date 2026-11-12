@@ -48,6 +48,10 @@ O que falta são as contas nos serviços — passos 1 a 3.
 > Se a senha tiver `@`, `:`, `/` ou `#`, troque por um caractere seguro ou use a versão
 > codificada (`%40`, `%3A`, `%2F`, `%23`). Esse é o erro mais comum na primeira tentativa.
 
+> O trecho `/poc_doacoes` **não é opcional**: sem ele o Spring aborta o startup com
+> `Database name must not be empty`. Se a string vier do botão *Connect* do Atlas, ela termina
+> em `.mongodb.net` e o nome do banco precisa ser acrescentado à mão.
+
 Guarde a string: ela é a variável `MONGO_URI` do passo 2.
 
 Para desenvolvimento local, ela fica no arquivo `.env` na raiz do repositório
@@ -78,7 +82,7 @@ SPRING_PROFILES_ACTIVE=prod,demo
 
    | Campo | Valor |
    |---|---|
-   | Name | `aep6s` (a URL será `https://aep6s.onrender.com`) |
+   | Name | `aep-6s-doacao-de-alimentos` (a URL será `https://aep-6s-doacao-de-alimentos.onrender.com`) |
    | Language / Runtime | **Docker** |
    | Branch | **main** |
    | Root Directory | *(vazio)* |
@@ -112,19 +116,19 @@ Started AepApplication in 8.2 seconds
 Seed demo: 2 doadores e 3 doacoes criados.
 ```
 
-E o painel mostra o estado **Live** com o endereço `https://<nome>.onrender.com`.
+E o painel mostra o estado **Live** com o endereço `https://aep-6s-doacao-de-alimentos.onrender.com`.
 
 ---
 
 ## 3. Validar (5 min)
 
-Abra `https://<nome>.onrender.com` no navegador. A tela deve mostrar o resumo com
+Abra `https://aep-6s-doacao-de-alimentos.onrender.com` no navegador. A tela deve mostrar o resumo com
 **3 doações / 23 itens / 3 tipos** — dados criados pelo perfil `demo` na primeira subida.
 
 Pelo terminal (PowerShell):
 
 ```powershell
-$base = "https://aep6s.onrender.com"
+$base = "https://aep-6s-doacao-de-alimentos.onrender.com"
 
 Invoke-RestMethod "$base/actuator/health"        # {"status":"UP"}
 Invoke-RestMethod "$base/api/usuarios" | ConvertTo-Json -Depth 4
@@ -157,7 +161,7 @@ No plano free o Render hiberna depois de ~15 minutos sem acesso; a próxima visi
 demora de 30 a 60 segundos. Para reduzir isso:
 
 1. Crie a conta em <https://uptimerobot.com> → **Add New Monitor**.
-2. Tipo **HTTP(s)**, URL `https://<nome>.onrender.com/actuator/health`, intervalo **5 minutos**.
+2. Tipo **HTTP(s)**, URL `https://aep-6s-doacao-de-alimentos.onrender.com/actuator/health`, intervalo **5 minutos**.
 3. Salve. Os pings mantêm a aplicação acordada durante o período de avaliação.
 
 > Um monitor a cada 5 minutos consome ~8.600 horas de instância por mês; o plano free
@@ -189,6 +193,7 @@ Se em algum momento a avaliação exigir disponibilidade total, o plano Starter 
 | **Application failed to respond** (502) | aplicação não escutou na porta do Render | conferir `server.port=${PORT:8081}` em `application-prod.properties` |
 | Log repete erro de conexão com o Mongo | IP não liberado ou string errada | Atlas → Network Access `0.0.0.0/0`; conferir usuário, senha e `/poc_doacoes` no fim da URI |
 | Conecta no `localhost` em vez do Atlas, ou os dados caem no banco `test` | propriedade com o prefixo antigo: no Spring Boot 4 é `spring.mongodb`, e `spring.data.mongodb.*` é ignorado | usar `spring.mongodb.uri` (já é o que está em `application.properties` e `application-prod.properties`) e manter o `/poc_doacoes` na URI |
+| Deploy morre com `Database name must not be empty` | `MONGO_URI` cadastrada sem o path do banco (`...mongodb.net` em vez de `...mongodb.net/poc_doacoes`) | acrescentar `/poc_doacoes` antes do `?` na variável do Render; o `spring.mongodb.database=poc_doacoes` dos properties cobre esse caso |
 | Health check falha e o deploy não ativa | `/actuator/health` responde `DOWN` (Mongo inacessível) | corrigir a conexão do Atlas; o Render só promove o deploy com health `UP` |
 | Página abre, mas sem estilo | cache do navegador | recarregar com `Ctrl+F5` |
 | Tela vazia e "API indisponível" | API hibernou ou caiu | esperar ~1 min e clicar em **Tentar novamente** |
