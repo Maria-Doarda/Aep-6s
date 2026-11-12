@@ -50,6 +50,22 @@ O que falta são as contas nos serviços — passos 1 a 3.
 
 Guarde a string: ela é a variável `MONGO_URI` do passo 2.
 
+Para desenvolvimento local, ela fica no arquivo `.env` na raiz do repositório
+(ignorado pelo Git). O modelo versionado é o `.env.example`:
+
+```bash
+cp .env.example .env      # PowerShell: Copy-Item .env.example .env
+```
+
+```dotenv
+MONGO_URI=mongodb+srv://aep6s:SENHA@cluster0.xxxxx.mongodb.net/poc_doacoes?retryWrites=true&w=majority
+PORT=8081
+SPRING_PROFILES_ACTIVE=prod,demo
+```
+
+> O Render **não** lê o `.env` do repositório: lá as mesmas chaves são cadastradas
+> no painel (passo 2). O `.env` serve para o Docker local e para o shell.
+
 ---
 
 ## 2. Render (20 min)
@@ -172,6 +188,7 @@ Se em algum momento a avaliação exigir disponibilidade total, o plano Starter 
 | Build falha em `dependency:go-offline` | instabilidade na rede do build | no Render, **Manual Deploy → Clear build cache & deploy** |
 | **Application failed to respond** (502) | aplicação não escutou na porta do Render | conferir `server.port=${PORT:8081}` em `application-prod.properties` |
 | Log repete erro de conexão com o Mongo | IP não liberado ou string errada | Atlas → Network Access `0.0.0.0/0`; conferir usuário, senha e `/poc_doacoes` no fim da URI |
+| Conecta no `localhost` em vez do Atlas, ou os dados caem no banco `test` | propriedade com o prefixo antigo: no Spring Boot 4 é `spring.mongodb`, e `spring.data.mongodb.*` é ignorado | usar `spring.mongodb.uri` (já é o que está em `application.properties` e `application-prod.properties`) e manter o `/poc_doacoes` na URI |
 | Health check falha e o deploy não ativa | `/actuator/health` responde `DOWN` (Mongo inacessível) | corrigir a conexão do Atlas; o Render só promove o deploy com health `UP` |
 | Página abre, mas sem estilo | cache do navegador | recarregar com `Ctrl+F5` |
 | Tela vazia e "API indisponível" | API hibernou ou caiu | esperar ~1 min e clicar em **Tentar novamente** |
@@ -202,11 +219,28 @@ no ar até você corrigir.
 
 ```bash
 docker build -t aep6s .
-docker run --rm -p 8081:8081 \
-  -e SPRING_PROFILES_ACTIVE=prod,demo \
-  -e MONGO_URI="mongodb://host.docker.internal:27017/poc_doacoes" \
-  aep6s
+docker run --rm -p 8081:8081 --env-file .env aep6s
 ```
+
+O `--env-file .env` injeta `MONGO_URI`, `PORT` e `SPRING_PROFILES_ACTIVE` de uma vez,
+sem repetir `-e` em cada variável. Para usar o Mongo do Docker em vez do Atlas, troque
+a linha no `.env` por `MONGO_URI=mongodb://host.docker.internal:27017/poc_doacoes`.
 
 Depois abra `http://localhost:8081`. No Linux, troque `host.docker.internal` pelo IP
 do host ou use `--network host`.
+
+### Rodando com `mvnw` e o `.env`
+
+O Spring Boot não lê o `.env` sozinho. No PowerShell, exporte as variáveis antes de subir:
+
+```powershell
+Get-Content .env | Where-Object { $_ -match '^\s*[^#\s]' } | ForEach-Object {
+  $chave, $valor = $_ -split '=', 2
+  Set-Item "env:$($chave.Trim())" $valor.Trim()
+}
+cd aep/aep
+.\mvnw.cmd spring-boot:run
+```
+
+No Mac/Linux, o equivalente é `set -a; . ./.env; set +a`. Sem esse passo, o perfil
+`prod` cai no padrão `mongodb://localhost:27017/poc_doacoes`.

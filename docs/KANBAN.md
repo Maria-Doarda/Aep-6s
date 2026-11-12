@@ -64,6 +64,7 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | C19 | Documentação técnica completa — `docs/ARQUITETURA.md` (camadas, fluxo, erros) e `docs/MODELAGEM.md` (coleções, JSON, índices) *(era A1)* | Gabriel | 11/11 | `docs/ARQUITETURA.md`, `docs/MODELAGEM.md` |
 | C20 | Cobertura com o pacote `cli` incluído: `CadastroCli` com I/O injetável, `CadastroCliTest` (24 testes) e `ResponseDtosTest`; exclusão removida do `pom.xml` *(era B2)* | Gabriel | 11/11 | 87 testes, **99,3% de linhas**, 97,9% de branches |
 | C21 | Tela web servida pela API (dashboard, doadores e doações) + pacote de deploy: `Dockerfile`, `.dockerignore`, perfil `prod`, actuator, seed `demo`, `render.yaml` e `docs/DEPLOY.md` | Gabriel | 11/11 | `src/main/resources/static/`, `Dockerfile`, `render.yaml`, `docs/DEPLOY.md` · 91 testes, **99,3% de linhas** |
+| C22 | Corrigir a conexão do Mongo no Spring Boot 4: o prefixo virou `spring.mongodb` (o antigo `spring.data.mongodb` era ignorado e a app caía no banco `test`/`localhost`, o que derrubaria o deploy) + `.env`/`.env.example` versionados | Gabriel | 11/11 | `application.properties`, `application-prod.properties`, `.gitignore`, `.env.example`; conexão validada com o Atlas (seed 2/3 e resumo 3/23/3) |
 
 ---
 
@@ -72,7 +73,7 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | # | Card | Responsável | Início | O que falta |
 |---|---|---|---|---|
 | A2 | Vídeo da 2ª entrega (3 a 5 min) | Equipe | — | roteiro cronometrado, gravação e publicação |
-| A3 | Publicar o ambiente online (Atlas + Render) e validar o endereço público | Gabriel | 11/11 | criar o cluster M0, preencher `MONGO_URI` no Render, rodar o checklist de `docs/DEPLOY.md` |
+| A3 | Publicar o ambiente online (Atlas + Render) e validar o endereço público | Gabriel | 11/11 | cluster M0 criado e testado (string no `.env`); falta preencher `MONGO_URI` no Render e rodar o checklist de `docs/DEPLOY.md` |
 
 ---
 
@@ -110,6 +111,7 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | 11/11 | C15–C18 concluídos; A1–A2 em andamento; B1–B9 priorizados a partir da análise da 2ª entrega |
 | 11/11 | **A1 → C19** (documentação técnica) e **B2 → C20** (cobertura com o `cli`): 87 testes, 99,3% de linhas. Restam A2 (vídeo) e B1, B3–B9 |
 | 11/11 | **C21**: tela web + pacote de deploy prontos (Docker, perfil `prod`, seed `demo`, `render.yaml`, `docs/DEPLOY.md`). Abre **A3** (publicar no Render) e sai do backlog o seed de demonstração |
+| 11/11 | **C22**: no Spring Boot 4 o prefixo do Mongo é `spring.mongodb`; as propriedades antigas eram ignoradas e a app gravava no banco `test`. Corrigido nos dois arquivos de configuração e validado contra o Atlas. `.env` fica fora do Git, `.env.example` versionado |
 
 ---
 

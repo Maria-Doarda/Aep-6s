@@ -87,6 +87,24 @@ docker ps --filter name=aepmongojava2026_mongo   # STATUS deve ser Up
 
 A API sobe em `http://localhost:8081`. Deixe esse terminal aberto. Na primeira vez o download das dependências demora; depois fica rápido.
 
+### Variáveis de ambiente
+
+O padrão (`localhost:27017/poc_doacoes`) já funciona com o `docker compose` acima, então
+nada é obrigatório para rodar local. Para apontar para o MongoDB Atlas, use o `.env`:
+
+```bash
+cp .env.example .env        # PowerShell: Copy-Item .env.example .env
+```
+
+| Arquivo | Situação |
+|---|---|
+| `.env` | local, **ignorado pelo Git** — guarda a string real do Atlas |
+| `.env.example` | versionado — modelo com os nomes das chaves e placeholders |
+
+O Spring Boot não lê `.env` automaticamente. O arquivo é consumido pelo Docker
+(`docker run --env-file .env`) e, ao rodar pelo `mvnw`, pelas variáveis exportadas no shell —
+o trecho pronto está em [`docs/DEPLOY.md`](docs/DEPLOY.md#rodando-com-mvnw-e-o-env).
+
 ---
 
 ## Testando a API
@@ -205,9 +223,17 @@ O relatório sai em `aep/aep/target/site/jacoco/index.html` e o log mostra `All 
 ## Estrutura do projeto
 
 ```
+.env.example                              # modelo das variáveis (copie para .env)
+Dockerfile / render.yaml / .dockerignore  # deploy no Render
+docs/
+├── KANBAN.md       # quadro de tarefas e metodologia
+├── RELEASES.md     # versões, tags e evidência de cobertura
+├── ARQUITETURA.md  # camadas, fluxo de requisição, erros e testes
+├── MODELAGEM.md    # coleções, documentos JSON, relacionamento e índices
+└── DEPLOY.md       # como publicar: Atlas, Render, keep-alive
+
 aep/aep/
 ├── pom.xml / compose.yaml / mvnw           # build, Mongo 7.0, wrapper
-├── Dockerfile                              # imagem usada no deploy (está na raiz do repositório)
 ├── src/main/resources/application.properties
 ├── src/main/resources/application-prod.properties
 ├── src/main/resources/static/              # tela: index.html, style.css, app.js
@@ -217,11 +243,4 @@ aep/aep/
     ├── models/ (Usuario, Doacao, Endereco)
     ├── dto/ mapper/ cli/ config/ exception/
     └── AepApplication.java
-
-docs/
-├── KANBAN.md       # quadro de tarefas e metodologia
-├── RELEASES.md     # versões, tags e evidência de cobertura
-├── ARQUITETURA.md  # camadas, fluxo de requisição, erros e testes
-├── MODELAGEM.md    # coleções, documentos JSON, relacionamento e índices
-└── DEPLOY.md       # como publicar: Atlas, Render, keep-alive
 ```
