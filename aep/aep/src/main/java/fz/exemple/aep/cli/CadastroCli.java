@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
+import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -30,69 +31,84 @@ public class CadastroCli implements CommandLineRunner {
     private final DoacaoService doacaoService;
     private final Validator validator;
 
+    private Scanner scanner;
+    private PrintStream out = System.out;
+
     public CadastroCli(UsuarioService usuarioService, DoacaoService doacaoService, Validator validator) {
         this.usuarioService = usuarioService;
         this.doacaoService = doacaoService;
         this.validator = validator;
     }
 
+    /** Injeta a entrada do usuário; em produção o menu usa System.in. */
+    void setScanner(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
+    /** Injeta a saída do menu; em produção o menu usa System.out. */
+    void setOut(PrintStream out) {
+        this.out = out;
+    }
+
     @Override
     public void run(String... args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println();
-        System.out.println("=== AEP6S terminal (API continua em http://localhost:8081) ===");
+        if (scanner == null) {
+            scanner = new Scanner(System.in);
+        }
+        out.println();
+        out.println("=== AEP6S terminal (API continua em http://localhost:8081) ===");
         try {
             while (true) {
                 imprimirMenu();
-                String opcao = lerLinha(scanner, "> ");
+                String opcao = lerLinha("> ");
                 switch (opcao.trim()) {
-                    case "1" -> cadastrarUsuario(scanner);
-                    case "2" -> cadastrarDoacao(scanner);
+                    case "1" -> cadastrarUsuario();
+                    case "2" -> cadastrarDoacao();
                     case "3" -> listarUsuarios();
-                    case "4" -> listarDoacoesPorUsuario(scanner);
+                    case "4" -> listarDoacoesPorUsuario();
                     case "5" -> listarTodasDoacoes();
                     case "0" -> {
-                        System.out.println("Saindo do menu. A API continua rodando em http://localhost:8081");
+                        out.println("Saindo do menu. A API continua rodando em http://localhost:8081");
                         return;
                     }
-                    default -> System.out.println("Opcao invalida. Digite 0-5.");
+                    default -> out.println("Opcao invalida. Digite 0-5.");
                 }
             }
         } catch (NoSuchElementException | IllegalStateException e) {
-            System.out.println("Entrada do terminal indisponivel. Pulando menu interativo, API continua rodando.");
+            out.println("Entrada do terminal indisponivel. Pulando menu interativo, API continua rodando.");
         }
     }
 
     private void imprimirMenu() {
-        System.out.println();
-        System.out.println("1) cadastrar usuario");
-        System.out.println("2) cadastrar doacao");
-        System.out.println("3) listar usuarios");
-        System.out.println("4) listar doacoes por usuario");
-        System.out.println("5) listar todas as doacoes");
-        System.out.println("0) sair do menu (API continua)");
+        out.println();
+        out.println("1) cadastrar usuario");
+        out.println("2) cadastrar doacao");
+        out.println("3) listar usuarios");
+        out.println("4) listar doacoes por usuario");
+        out.println("5) listar todas as doacoes");
+        out.println("0) sair do menu (API continua)");
     }
 
-    private void cadastrarUsuario(Scanner scanner) {
+    private void cadastrarUsuario() {
         try {
-            String nome = lerLinha(scanner, "Nome: ");
-            String email = lerLinha(scanner, "Email: ");
+            String nome = lerLinha("Nome: ");
+            String email = lerLinha("Email: ");
 
             List<EnderecoDTO> enderecos = new ArrayList<>();
-            String add = lerLinha(scanner, "Adicionar endereco? (s/n): ");
+            String add = lerLinha("Adicionar endereco? (s/n): ");
             while (add.equalsIgnoreCase("s")) {
-                String rua = lerLinha(scanner, "Rua: ");
-                String cidade = lerLinha(scanner, "Cidade: ");
-                String estado = lerLinha(scanner, "Estado (2 letras, ex PR): ");
+                String rua = lerLinha("Rua: ");
+                String cidade = lerLinha("Cidade: ");
+                String estado = lerLinha("Estado (2 letras, ex PR): ");
                 EnderecoDTO dto = new EnderecoDTO(rua, cidade, estado);
                 Set<ConstraintViolation<EnderecoDTO>> violacoesEnd = validator.validate(dto);
                 if (!violacoesEnd.isEmpty()) {
-                    System.out.println("Endereco invalido:");
-                    violacoesEnd.forEach(v -> System.out.println(" - " + v.getPropertyPath() + ": " + v.getMessage()));
+                    out.println("Endereco invalido:");
+                    violacoesEnd.forEach(v -> out.println(" - " + v.getPropertyPath() + ": " + v.getMessage()));
                 } else {
                     enderecos.add(dto);
                 }
-                add = lerLinha(scanner, "Adicionar outro endereco? (s/n): ");
+                add = lerLinha("Adicionar outro endereco? (s/n): ");
             }
 
             UsuarioCreateRequest req = new UsuarioCreateRequest();
@@ -102,40 +118,33 @@ public class CadastroCli implements CommandLineRunner {
 
             Set<ConstraintViolation<UsuarioCreateRequest>> violacoes = validator.validate(req);
             if (!violacoes.isEmpty()) {
-                System.out.println("Usuario invalido (400):");
-                violacoes.forEach(v -> System.out.println(" - " + v.getPropertyPath() + ": " + v.getMessage()));
+                out.println("Usuario invalido (400):");
+                violacoes.forEach(v -> out.println(" - " + v.getPropertyPath() + ": " + v.getMessage()));
                 return;
             }
 
             UsuarioResponse resp = usuarioService.criar(req);
-            System.out.println("Usuario criado! id=" + resp.getId() + " -> /api/usuarios/" + resp.getId());
+            out.println("Usuario criado! id=" + resp.getId() + " -> /api/usuarios/" + resp.getId());
         } catch (DataAccessException e) {
-            System.out.println("MongoDB indisponivel (503). Suba com: docker compose up -d");
+            out.println("MongoDB indisponivel (503). Suba com: docker compose up -d");
         } catch (Exception e) {
-            System.out.println("Erro ao cadastrar usuario: " + e.getMessage());
+            out.println("Erro ao cadastrar usuario: " + e.getMessage());
         }
     }
 
-    private void cadastrarDoacao(Scanner scanner) {
+    private void cadastrarDoacao() {
         try {
-            String usuarioId = lerLinha(scanner, "UsuarioId: ");
+            String usuarioId = lerLinha("UsuarioId: ");
             if (usuarioService.buscarPorId(usuarioId).isEmpty()) {
-                System.out.println("Aviso: usuarioId nao encontrado. A doacao sera salva orfa (mesmo comportamento da API).");
+                out.println("Aviso: usuarioId nao encontrado. A doacao sera salva orfa (mesmo comportamento da API).");
             }
-            String item = lerLinha(scanner, "Item (ex Arroz): ");
-            int quantidade = lerInt(scanner, "Quantidade (>0): ");
-            String dataStr = lerLinha(scanner, "Data (yyyy-MM-dd, vazio=hoje): ");
+            String item = lerLinha("Item (ex Arroz): ");
+            int quantidade = lerInt("Quantidade (>0): ");
+            String dataStr = lerLinha("Data (yyyy-MM-dd, vazio=hoje): ");
 
-            LocalDate data = null;
-            if (!dataStr.isBlank()) {
-                try {
-                    data = LocalDate.parse(dataStr.trim());
-                } catch (DateTimeParseException e) {
-                    System.out.println("Data invalida. Use yyyy-MM-dd.");
-                    return;
-                }
-            } else {
-                data = LocalDate.now();
+            LocalDate data = interpretarData(dataStr);
+            if (data == null) {
+                return;
             }
 
             DoacaoCreateRequest req = new DoacaoCreateRequest();
@@ -146,17 +155,34 @@ public class CadastroCli implements CommandLineRunner {
 
             Set<ConstraintViolation<DoacaoCreateRequest>> violacoes = validator.validate(req);
             if (!violacoes.isEmpty()) {
-                System.out.println("Doacao invalida (400):");
-                violacoes.forEach(v -> System.out.println(" - " + v.getPropertyPath() + ": " + v.getMessage()));
+                out.println("Doacao invalida (400):");
+                violacoes.forEach(v -> out.println(" - " + v.getPropertyPath() + ": " + v.getMessage()));
                 return;
             }
 
             DoacaoResponse resp = doacaoService.criar(req);
-            System.out.println("Doacao criada! id=" + resp.getId() + " -> /api/doacoes/" + resp.getId());
+            out.println("Doacao criada! id=" + resp.getId() + " -> /api/doacoes/" + resp.getId());
         } catch (DataAccessException e) {
-            System.out.println("MongoDB indisponivel (503). Suba com: docker compose up -d");
+            out.println("MongoDB indisponivel (503). Suba com: docker compose up -d");
         } catch (Exception e) {
-            System.out.println("Erro ao cadastrar doacao: " + e.getMessage());
+            out.println("Erro ao cadastrar doacao: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Interpreta a data digitada no menu.
+     *
+     * @return a data informada, hoje quando o campo vem vazio, ou {@code null} quando o formato é inválido
+     */
+    LocalDate interpretarData(String dataStr) {
+        if (dataStr == null || dataStr.isBlank()) {
+            return LocalDate.now();
+        }
+        try {
+            return LocalDate.parse(dataStr.trim());
+        } catch (DateTimeParseException e) {
+            out.println("Data invalida. Use yyyy-MM-dd.");
+            return null;
         }
     }
 
@@ -164,28 +190,28 @@ public class CadastroCli implements CommandLineRunner {
         try {
             List<UsuarioResponse> usuarios = usuarioService.listarTodos();
             if (usuarios.isEmpty()) {
-                System.out.println("Nenhum usuario cadastrado.");
+                out.println("Nenhum usuario cadastrado.");
                 return;
             }
-            System.out.println("id | nome | email");
-            usuarios.forEach(u -> System.out.println(u.getId() + " | " + u.getNome() + " | " + u.getEmail()));
+            out.println("id | nome | email");
+            usuarios.forEach(u -> out.println(u.getId() + " | " + u.getNome() + " | " + u.getEmail()));
         } catch (DataAccessException e) {
-            System.out.println("MongoDB indisponivel (503). Suba com: docker compose up -d");
+            out.println("MongoDB indisponivel (503). Suba com: docker compose up -d");
         }
     }
 
-    private void listarDoacoesPorUsuario(Scanner scanner) {
+    private void listarDoacoesPorUsuario() {
         try {
-            String usuarioId = lerLinha(scanner, "UsuarioId: ");
+            String usuarioId = lerLinha("UsuarioId: ");
             List<DoacaoResponse> doacoes = doacaoService.listarPorUsuario(usuarioId);
             if (doacoes.isEmpty()) {
-                System.out.println("Nenhuma doacao para este usuario.");
+                out.println("Nenhuma doacao para este usuario.");
                 return;
             }
-            System.out.println("id | item | qtd | data");
-            doacoes.forEach(d -> System.out.println(d.getId() + " | " + d.getItem() + " | " + d.getQuantidade() + " | " + d.getDataDoacao()));
+            out.println("id | item | qtd | data");
+            doacoes.forEach(d -> out.println(d.getId() + " | " + d.getItem() + " | " + d.getQuantidade() + " | " + d.getDataDoacao()));
         } catch (DataAccessException e) {
-            System.out.println("MongoDB indisponivel (503). Suba com: docker compose up -d");
+            out.println("MongoDB indisponivel (503). Suba com: docker compose up -d");
         }
     }
 
@@ -193,28 +219,29 @@ public class CadastroCli implements CommandLineRunner {
         try {
             List<DoacaoResponse> doacoes = doacaoService.listarTodos();
             if (doacoes.isEmpty()) {
-                System.out.println("Nenhuma doacao cadastrada.");
+                out.println("Nenhuma doacao cadastrada.");
                 return;
             }
-            System.out.println("id | usuarioId | item | qtd | data");
-            doacoes.forEach(d -> System.out.println(d.getId() + " | " + d.getUsuarioId() + " | " + d.getItem() + " | " + d.getQuantidade() + " | " + d.getDataDoacao()));
+            out.println("id | usuarioId | item | qtd | data");
+            doacoes.forEach(d -> out.println(d.getId() + " | " + d.getUsuarioId() + " | " + d.getItem() + " | " + d.getQuantidade() + " | " + d.getDataDoacao()));
         } catch (DataAccessException e) {
-            System.out.println("MongoDB indisponivel (503). Suba com: docker compose up -d");
+            out.println("MongoDB indisponivel (503). Suba com: docker compose up -d");
         }
     }
 
-    private String lerLinha(Scanner scanner, String prompt) {
-        System.out.print(prompt);
+    private String lerLinha(String prompt) {
+        out.print(prompt);
+        out.flush();
         return scanner.nextLine();
     }
 
-    private int lerInt(Scanner scanner, String prompt) {
+    private int lerInt(String prompt) {
         while (true) {
-            String valor = lerLinha(scanner, prompt);
+            String valor = lerLinha(prompt);
             try {
                 return Integer.parseInt(valor.trim());
             } catch (NumberFormatException e) {
-                System.out.println("Digite um numero inteiro.");
+                out.println("Digite um numero inteiro.");
             }
         }
     }
