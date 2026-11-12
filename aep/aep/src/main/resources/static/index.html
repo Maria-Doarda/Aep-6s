@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AEP6S — Registro de doações de alimentos</title>
+  <meta name="description" content="Cadastro de doadores e doações de alimentos. Projeto AEP de Engenharia de Software: API REST em Spring Boot com MongoDB.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Bitter:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+
+  <header class="topbar">
+    <p class="brand">
+      <span class="brand__mark">AEP6S</span>
+      <span class="brand__meta">Engenharia de Software · 2026</span>
+    </p>
+    <p class="status" id="api-status" data-state="connecting" role="status" aria-live="polite">
+      <span class="status__dot" aria-hidden="true"></span>
+      <span id="api-status-texto">Conectando à API…</span>
+    </p>
+  </header>
+
+  <main id="conteudo">
+    <section class="intro">
+      <h1>Registro de doações de alimentos</h1>
+      <p class="intro__lead">
+        Cadastre quem doa e o que foi doado. Os totais abaixo vêm de
+        <code>GET /api/doacoes/resumo</code> e são recalculados a cada alteração.
+      </p>
+    </section>
+
+    <section class="summary" aria-label="Resumo das doações">
+      <div class="summary__metrics">
+        <div class="metric">
+          <span class="metric__valor" id="metric-doacoes">—</span>
+          <span class="metric__rotulo">doações registradas</span>
+        </div>
+        <div class="metric">
+          <span class="metric__valor" id="metric-quantidade">—</span>
+          <span class="metric__rotulo">itens recebidos</span>
+        </div>
+        <div class="metric">
+          <span class="metric__valor" id="metric-tipos">—</span>
+          <span class="metric__rotulo">tipos de item</span>
+        </div>
+      </div>
+      <p class="stamp" aria-hidden="true">ODS 2<br>Fome zero</p>
+    </section>
+
+    <div class="fallback" id="falha" hidden>
+      <p id="falha-texto">Não foi possível carregar os dados agora.</p>
+      <button class="btn btn--ghost" type="button" id="tentar-novamente">Tentar novamente</button>
+    </div>
+
+    <section class="block" aria-labelledby="titulo-doadores">
+      <header class="block__head">
+        <h2 id="titulo-doadores">Doadores</h2>
+        <p class="block__hint">Um doador pode ter mais de um endereço de entrega.</p>
+      </header>
+
+      <div class="block__body">
+        <form class="ficha" id="form-usuario" novalidate>
+          <h3 class="ficha__titulo">Novo doador</h3>
+
+          <div class="field">
+            <label for="u-nome">Nome</label>
+            <input id="u-nome" data-campo="nome" type="text" maxlength="100" autocomplete="off" required>
+            <p class="field__error" data-erro="nome" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="u-email">E-mail</label>
+            <input id="u-email" data-campo="email" type="email" autocomplete="off" required>
+            <p class="field__error" data-erro="email" hidden></p>
+          </div>
+
+          <fieldset class="enderecos">
+            <legend>Endereços <span class="enderecos__opcional">(opcional)</span></legend>
+            <div class="enderecos__lista" id="enderecos-lista"></div>
+            <button class="btn btn--ghost btn--sm" type="button" id="add-endereco">Adicionar endereço</button>
+          </fieldset>
+
+          <button class="btn btn--primary" type="submit" id="btn-usuario">Cadastrar doador</button>
+        </form>
+
+        <div class="listagem">
+          <table class="tabela" id="tabela-usuarios">
+            <thead>
+              <tr>
+                <th scope="col">Doador</th>
+                <th scope="col">Endereços</th>
+                <th scope="col" class="col-acao">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="usuarios-corpo"></tbody>
+          </table>
+          <p class="vazio" id="usuarios-vazio">Nenhum doador cadastrado ainda. Use o formulário ao lado para começar.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="titulo-doacoes">
+      <header class="block__head">
+        <h2 id="titulo-doacoes">Doações</h2>
+        <p class="block__hint">Escolha um doador já cadastrado e informe o item recebido.</p>
+      </header>
+
+      <div class="block__body">
+        <form class="ficha" id="form-doacao" novalidate>
+          <h3 class="ficha__titulo">Nova doação</h3>
+
+          <div class="field">
+            <label for="d-usuario">Doador</label>
+            <select id="d-usuario" data-campo="usuarioId" required>
+              <option value="">Selecione um doador</option>
+            </select>
+            <p class="field__error" data-erro="usuarioId" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="d-item">Item</label>
+            <input id="d-item" data-campo="item" type="text" maxlength="80" placeholder="Arroz, feijão, leite…" autocomplete="off" required>
+            <p class="field__error" data-erro="item" hidden></p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="d-quantidade">Quantidade</label>
+              <input id="d-quantidade" data-campo="quantidade" type="number" min="1" step="1" value="1" required>
+              <p class="field__error" data-erro="quantidade" hidden></p>
+            </div>
+            <div class="field">
+              <label for="d-data">Data</label>
+              <input id="d-data" data-campo="dataDoacao" type="date" required>
+              <p class="field__error" data-erro="dataDoacao" hidden></p>
+            </div>
+          </div>
+
+          <button class="btn btn--primary" type="submit" id="btn-doacao">Registrar doação</button>
+        </form>
+
+        <div class="listagem">
+          <table class="tabela" id="tabela-doacoes">
+            <thead>
+              <tr>
+                <th scope="col">Data</th>
+                <th scope="col">Item</th>
+                <th scope="col" class="col-num">Qtd.</th>
+                <th scope="col">Doador</th>
+                <th scope="col" class="col-acao">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="doacoes-corpo"></tbody>
+          </table>
+          <p class="vazio" id="doacoes-vazio">Nenhuma doação registrada ainda.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="rodape">
+      <p class="rodape__linha">
+        Projeto AEP · API REST em Spring Boot 4 com MongoDB ·
+        Objetivo de Desenvolvimento Sustentável 2
+      </p>
+
+      <details class="rotas">
+        <summary>Rotas da API disponíveis</summary>
+        <div class="rotas__corpo">
+          <table class="tabela tabela--compacta">
+            <thead>
+              <tr><th scope="col">Método</th><th scope="col">Rota</th><th scope="col">O que faz</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>GET</code></td><td><code>/api/usuarios</code></td><td>lista os doadores</td></tr>
+              <tr><td><code>POST</code></td><td><code>/api/usuarios</code></td><td>cadastra um doador</td></tr>
+              <tr><td><code>GET</code></td><td><code>/api/usuarios/{id}</code></td><td>busca um doador</td></tr>
+              <tr><td><code>PUT</code></td><td><code>/api/usuarios/{id}</code></td><td>atualiza um doador</td></tr>
+              <tr><td><code>DELETE</code></td><td><code>/api/usuarios/{id}</code></td><td>remove um doador</td></tr>
+              <tr><td><code>GET</code></td><td><code>/api/doacoes</code></td><td>lista as doações</td></tr>
+              <tr><td><code>POST</code></td><td><code>/api/doacoes</code></td><td>registra uma doação</td></tr>
+              <tr><td><code>GET</code></td><td><code>/api/doacoes/{id}</code></td><td>busca uma doação</td></tr>
+              <tr><td><code>GET</code></td><td><code>/api/doacoes/usuario/{usuarioId}</code></td><td>doações de um doador</td></tr>
+              <tr><td><code>GET</code></td><td><code>/api/doacoes/resumo</code></td><td>totais exibidos acima</td></tr>
+              <tr><td><code>PUT</code></td><td><code>/api/doacoes/{id}</code></td><td>atualiza uma doação</td></tr>
+              <tr><td><code>DELETE</code></td><td><code>/api/doacoes/{id}</code></td><td>remove uma doação</td></tr>
+            </tbody>
+          </table>
+          <p class="rotas__nota">
+            A primeira visita depois de um período sem acesso pode levar até um minuto:
+            a aplicação gratuita hiberna e precisa acordar.
+          </p>
+        </div>
+      </details>
+    </footer>
+  </main>
+
+  <p class="aviso-lento" id="aviso-lento" role="status" hidden>
+    Acordando a API… o primeiro acesso pode levar até um minuto.
+  </p>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+</body>
+</html>
