@@ -6,7 +6,7 @@
 ![Spring Boot 4.1.0](https://img.shields.io/badge/Spring%20Boot-4.1.0-green)
 ![MongoDB 7.0](https://img.shields.io/badge/MongoDB-7.0-green)
 ![Tests passing](https://img.shields.io/badge/tests-91%20passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-99%25%20lines-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-99%25%20lines%20%28all%20packages%29-brightgreen)
 ![Build](https://img.shields.io/badge/build-mvn%20clean%20verify-blue)
 
 > Spring Boot 4.1.0 + Java 17 + MongoDB (`poc_doacoes`) — API REST para cadastrar doadores (`Usuario`) e doações de alimentos (`Doacao`), com tela web servida pela própria aplicação.
