@@ -1,0 +1,22 @@
+# Artefatos de build e logs
+**/target/
+**/*.log
+
+# Controle de versao e IDEs
+.git/
+.gitignore
+.idea/
+.vscode/
+
+# Documentacao (nao entra na imagem)
+docs/
+README.md
+**/*.md
+
+# Arquivos que nao participam do build Maven
+aep/aep/compose.yaml
+aep/aep/mvnw
+aep/aep/mvnw.cmd
+aep/aep/.mvn/
+aep/aep/.agents/
+aep/aep/.gitignore

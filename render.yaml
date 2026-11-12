@@ -1,0 +1,19 @@
+# Infraestrutura como codigo do Render (https://render.com/docs/blueprint-spec).
+# Opcional: no painel do Render voce consegue criar o servico manualmente com os
+# mesmos valores. O blueprint serve para recriar o ambiente em um clique.
+services:
+  - type: web
+    name: aep6s
+    runtime: docker
+    plan: free
+    region: ohio
+    branch: main
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod,demo
+      # Preenchido no painel do Render; nunca vai para o Git
+      - key: MONGO_URI
+        sync: false
