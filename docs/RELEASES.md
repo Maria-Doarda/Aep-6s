@@ -44,10 +44,13 @@ Já concluído nesta entrega:
 |---|---|
 | Documentação técnica | `docs/ARQUITETURA.md` + `docs/MODELAGEM.md` |
 | Quadro de tarefas | `docs/KANBAN.md`, 29 issues e board público no GitHub Projects |
-| Cobertura | **87 testes**, **99,3% de linhas** e **97,9% de branches**, sem excluir o pacote `cli` |
+| Cobertura | **91 testes**, **99,3% de linhas** e **98,0% de branches**, sem excluir o pacote `cli` |
+| Tela web | `src/main/resources/static/` — dashboard do resumo, cadastro de doadores e de doações |
+| Ambiente online | `Dockerfile`, perfil `prod`, seed `demo`, `render.yaml` e `docs/DEPLOY.md` |
 
 Ainda falta preencher no fechamento:
 
+- Endereço público gerado pelo Render (substituir em `README.md` e `docs/DEPLOY.md`)
 - Funcionalidades novas em relação à `v1.0-entrega1` (cards `B3`–`B7` em `docs/KANBAN.md`)
 - Link do vídeo de demonstração (3 a 5 min)
 

@@ -86,7 +86,7 @@ Todas as conversões ficam em `exception/GlobalExceptionHandler` (`@RestControll
 
 ## 8. Testes
 
-87 testes JUnit 5 com Mockito e MockMvc, sem banco real:
+91 testes JUnit 5 com Mockito e MockMvc, sem banco real:
 
 | Tipo | Classes | O que cobre |
 |---|---|---|
@@ -97,7 +97,7 @@ Todas as conversões ficam em `exception/GlobalExceptionHandler` (`@RestControll
 | Unitário | `CadastroCliTest` | menu do terminal, validações e caminhos de erro |
 | Unitário | `ResponseDtosTest` | construtores, getters e setters dos DTOs de resposta |
 
-Cobertura medida pelo JaCoCo com gate de 70%, **sem exclusão de pacotes**: 99,3% de linhas (412/415) e 97,9% de branches. O relatório sai em `target/site/jacoco/index.html`.
+Cobertura medida pelo JaCoCo com gate de 70%, **sem exclusão de pacotes**: 99,3% de linhas (454/457) e 98,0% de branches. O relatório sai em `target/site/jacoco/index.html`.
 
 ## 9. Decisões de projeto
 
