@@ -65,6 +65,10 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | C20 | Cobertura com o pacote `cli` incluído: `CadastroCli` com I/O injetável, `CadastroCliTest` (24 testes) e `ResponseDtosTest`; exclusão removida do `pom.xml` *(era B2)* | Gabriel | 11/11 | 87 testes, **99,3% de linhas**, 97,9% de branches |
 | C21 | Tela web servida pela API (dashboard, doadores e doações) + pacote de deploy: `Dockerfile`, `.dockerignore`, perfil `prod`, actuator, seed `demo`, `render.yaml` e `docs/DEPLOY.md` | Gabriel | 11/11 | `src/main/resources/static/`, `Dockerfile`, `render.yaml`, `docs/DEPLOY.md` · 91 testes, **99,3% de linhas** |
 | C22 | Corrigir a conexão do Mongo no Spring Boot 4: o prefixo virou `spring.mongodb` (o antigo `spring.data.mongodb` era ignorado e a app caía no banco `test`/`localhost`, o que derrubaria o deploy) + `.env`/`.env.example` versionados | Gabriel | 11/11 | `application.properties`, `application-prod.properties`, `.gitignore`, `.env.example`; conexão validada com o Atlas (seed 2/3 e resumo 3/23/3) |
+| C23 | Publicar o ambiente online (Atlas + Render) e validar o endereço público *(era A3)* | Gabriel | 12/11 | `https://aep-6s-doacao-de-alimentos.onrender.com` — health `UP`, resumo 3/23/3, POST 201 com `Location`, 400 por campo, 404, DELETE 204 idempotente e assets 200 |
+| C24 | Robustez do banco: health check próprio, handler de 503 e `compose.yaml` com `healthcheck`/`restart` *(era B8)* | Gabriel · Maria | 12/11 | `MongoPingHealthIndicator` + teste, `MongoUnavailableHandler`, `compose.yaml` (PR #41) |
+| C25 | Interface web final: painel com menu lateral e página pública de doação em 4 etapas | Sophia | 13/11 | `index.html`, `doar.html`, `doar.js`, `doar.css` (PR #42) |
+| C26 | Fechar a 2ª entrega: números finais, tag `v2.0-entrega2` e Release no GitHub *(era B1)* | Gabriel | 13/11 | 93 testes · 98,7% de linhas · tag `v2.0-entrega2` · Release |
 
 ---
 
@@ -73,7 +77,6 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | # | Card | Responsável | Início | O que falta |
 |---|---|---|---|---|
 | A2 | Vídeo da 2ª entrega (3 a 5 min) | Equipe | — | roteiro cronometrado, gravação e publicação |
-| A3 | Publicar o ambiente online (Atlas + Render) e validar o endereço público | Gabriel | 11/11 | no ar em `https://aep-6s-doacao-de-alimentos.onrender.com`; falta o redeploy com a correção do health check (`MongoPingHealthIndicator`) e o checklist final de `docs/DEPLOY.md` |
 
 ---
 
@@ -81,14 +84,12 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 
 | # | Card | Prioridade | Critério da AEP atendido |
 |---|---|---|---|
-| B1 | Fechar a 2ª entrega: tag `v2.0-entrega2` + Release no GitHub | Alta | Versão final identificável |
 | B3 | `resumo` via aggregation pipeline (`$group`) + endpoint `resumo/por-item` | Média | Uso efetivo de NoSQL |
 | B4 | Índices (`@Indexed` em `usuarioId`/`item`, `@CompoundIndex`) | Média | Modelagem NoSQL |
 | B5 | Filtros combinados em `GET /api/doacoes` (`item`, `usuarioId`, `dataInicio`) | Média | Evolução funcional |
 | B6 | Validar existência do `usuarioId` ao criar doação (hoje aceita doação órfã) | Média | Relacionamento entre coleções |
 | B7 | `PUT /api/usuarios/{id}/enderecos` para manipular o subdocumento | Baixa | Documento complexo (2º semestre) |
-| B8 | `healthcheck` + `restart` no `compose.yaml` e handler 503 para Mongo fora do ar | Baixa | Robustez da demonstração |
-| B9 | Ajustar JaCoCo para o JDK 25 (ou fixar JDK 17 no README e no `.mvn/jvm.config`) | Baixa | Build reproduzível |
+| B9 | Fixar a versão do JDK no `.mvn/jvm.config` para build reproduzível | Baixa | Build reproduzível |
 
 ---
 
@@ -113,6 +114,8 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | 11/11 | **C21**: tela web + pacote de deploy prontos (Docker, perfil `prod`, seed `demo`, `render.yaml`, `docs/DEPLOY.md`). Abre **A3** (publicar no Render) e sai do backlog o seed de demonstração |
 | 11/11 | **C22**: no Spring Boot 4 o prefixo do Mongo é `spring.mongodb`; as propriedades antigas eram ignoradas e a app gravava no banco `test`. Corrigido nos dois arquivos de configuração e validado contra o Atlas. `.env` fica fora do Git, `.env.example` versionado |
 | 11/11 | **Merge da `main`** no `Gabriel` antes do PR: a equipe subiu o JaCoCo **0.8.16**, que elimina os avisos de `major version 69` do JDK 25 — **#34 resolvida**. `clean verify` segue com 91 testes e cobertura aprovada |
+| 12/11 | **A3 → C23**: ambiente publicado e validado ponta a ponta no Render (health `UP` após a correção do health check). **B8 → C24**: `MongoPingHealthIndicator`, `MongoUnavailableHandler` e `compose.yaml` com `healthcheck`/`restart` (PR #41) |
+| 13/11 | **C25**: interface web final no ar — painel com menu lateral e página pública de doação em 4 etapas (PR #42). **B1 → C26**: números finais (93 testes, 98,7% de linhas), tag `v2.0-entrega2` e Release publicada |
 
 ---
 

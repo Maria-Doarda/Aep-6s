@@ -86,7 +86,7 @@ Todas as conversões ficam em `exception/GlobalExceptionHandler` (`@RestControll
 
 ## 8. Testes
 
-91 testes JUnit 5 com Mockito e MockMvc, sem banco real:
+93 testes JUnit 5 com Mockito e MockMvc, sem banco real:
 
 | Tipo | Classes | O que cobre |
 |---|---|---|
@@ -96,8 +96,10 @@ Todas as conversões ficam em `exception/GlobalExceptionHandler` (`@RestControll
 | Unitário | `GlobalExceptionHandlerTest` | 400 / 404 / 500 |
 | Unitário | `CadastroCliTest` | menu do terminal, validações e caminhos de erro |
 | Unitário | `ResponseDtosTest` | construtores, getters e setters dos DTOs de resposta |
+| Unitário | `DemoDataSeederTest` | seed idempotente e tolerância a banco fora do ar |
+| Unitário | `MongoPingHealthIndicatorTest` | health `UP` no ping e `DOWN` com a causa |
 
-Cobertura medida pelo JaCoCo com gate de 70%, **sem exclusão de pacotes**: 99,3% de linhas (454/457) e 98,0% de branches. O relatório sai em `target/site/jacoco/index.html`.
+Cobertura medida pelo JaCoCo com gate de 70%, **sem exclusão de pacotes**: 98,7% de linhas (463/469) e 98,0% de branches. O relatório sai em `target/site/jacoco/index.html`. As 6 linhas descobertas são o `MongoUnavailableHandler`, cujo efeito (503) é verificado no ambiente publicado.
 
 ## 9. Decisões de projeto
 
