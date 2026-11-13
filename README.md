@@ -5,8 +5,8 @@
 ![Java 17](https://img.shields.io/badge/Java-17-blue)
 ![Spring Boot 4.1.0](https://img.shields.io/badge/Spring%20Boot-4.1.0-green)
 ![MongoDB 7.0](https://img.shields.io/badge/MongoDB-7.0-green)
-![Tests passing](https://img.shields.io/badge/tests-91%20passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-99%25%20lines%20%28all%20packages%29-brightgreen)
+![Tests passing](https://img.shields.io/badge/tests-93%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-98%2C7%25%20lines%20%28all%20packages%29-brightgreen)
 ![Build](https://img.shields.io/badge/build-mvn%20clean%20verify-blue)
 
 > Spring Boot 4.1.0 + Java 17 + MongoDB (`poc_doacoes`) — API REST para cadastrar doadores (`Usuario`) e doações de alimentos (`Doacao`), com tela web servida pela própria aplicação.
@@ -42,7 +42,7 @@ O projeto atende doadores (pessoas e estabelecimentos) e ONGs e bancos de alimen
 
 - **Usuários (doadores):** criar, listar, buscar, atualizar e remover. Criar retorna 201 com o endereço do novo recurso; atualizar retorna 200 ou 404; remover retorna 204 e pode ser repetida sem erro.
 - **Doações:** criar, listar, buscar por ID, listar por usuário e ver o resumo. Mesmos códigos da lista acima.
-- **Tela web:** página única servida pela API (`/`) com os totais do resumo, cadastro de doadores com endereços dinâmicos, registro e exclusão de doações. Usa `fetch` nos mesmos endpoints — sem framework, sem build e sem CORS.
+- **Tela web:** duas páginas servidas pela própria aplicação, sem framework, sem build e sem CORS. O painel (`/`) traz os totais do resumo, o cadastro de doadores com endereços dinâmicos e o registro e a exclusão de doações; a página pública (`/doar.html`) guia a doação em quatro etapas. Ambas usam `fetch` nos mesmos endpoints.
 - **Terminal (alternativa à tela):** menu interativo no console para cadastrar e listar, rodando junto com a API.
 - Dados inválidos retornam 400, IDs inexistentes retornam 404. Não precisa de login.
 
@@ -192,7 +192,7 @@ Detalhes, notas de release e comandos para reproduzir a cobertura: [`docs/RELEAS
 
 ```bash
 # na pasta aep/aep
-.\mvnw.cmd clean verify   # Windows — 91 testes, exige cobertura mínima de 70%
+.\mvnw.cmd clean verify   # Windows — 93 testes, exige cobertura mínima de 70%
 ./mvnw clean verify        # Mac/Linux
 ```
 
@@ -200,8 +200,8 @@ Testes JUnit com Mockito e MockMvc (`src/test`: controllers, services, mappers, 
 
 | Métrica | Valor |
 |---|---|
-| Testes | **91** |
-| Linhas cobertas | **99,3%** (454/457) |
+| Testes | **93** |
+| Linhas cobertas | **98,7%** (463/469) |
 | Branches cobertos | **98,0%** (50/51) |
 
 O relatório sai em `aep/aep/target/site/jacoco/index.html` e o log mostra `All coverage checks have been met`.
