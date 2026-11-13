@@ -47,12 +47,17 @@ Exemplo — `POST /api/doacoes`:
 
 1. `SecurityConfig` deixa passar (todas as rotas são públicas)
 2. `DoacaoController.criar(@Valid DoacaoCreateRequest)` valida o JSON; erro → `400` com `{campo: mensagem}`
-3. `DoacaoService.criar(request)` chama `DoacaoMapper.toEntity(request)`
-4. `DoacaoRepository.save(entity)` grava na coleção `doacoes`; o Mongo gera o `ObjectId`
-5. `DoacaoMapper.toResponse(saved)` monta o `DoacaoResponse`
-6. Controller responde **`201 Created`** com header `Location: /api/doacoes/{id}` e o corpo do recurso
+3. `DoacaoService.criar(request)` chama `exigirDoador(usuarioId)`: se o `usuarioId` não existir em `usuarios`, lança `RecursoNaoEncontradoException` → `404`
+4. `DoacaoMapper.toEntity(request)` converte o DTO no documento `Doacao`
+5. `DoacaoRepository.save(entity)` grava na coleção `doacoes`; o Mongo gera o `ObjectId` (os índices de `@Indexed`/`@CompoundIndex` já existem desde a subida)
+6. `DoacaoMapper.toResponse(saved)` monta o `DoacaoResponse`
+7. Controller responde **`201 Created`** com header `Location: /api/doacoes/{id}` e o corpo do recurso
 
 Leitura — `GET /api/doacoes/{id}`: o service devolve `Optional<DoacaoResponse>`; o controller converte em `200` ou `404` (sem exception).
+
+Agregação — `GET /api/doacoes/resumo` e `/resumo/por-item`: o service monta uma `Aggregation`
+e chama `MongoTemplate.aggregate(...)`. O `$group` roda no servidor MongoDB e a aplicação
+recebe só o resultado, sem carregar os documentos.
 
 ## 4. Tratamento de erros
 
@@ -60,12 +65,14 @@ Leitura — `GET /api/doacoes/{id}`: o service devolve `Optional<DoacaoResponse>
 |---|---|---|---|
 | Campo inválido (`email` sem `@`, `quantidade <= 0`, `nome` vazio) | `400` | `{"email": "deve ser um endereço de e-mail válido"}` | `MethodArgumentNotValidException` |
 | ID inexistente | `404` | *(vazio)* | `Optional.empty()` no controller |
-| Recurso não encontrado via serviço | `404` | `{"erro": "..."}` | `RecursoNaoEncontradoException` |
+| Doador inexistente no `POST`/`PUT` de doação | `404` | `{"erro": "Doador nao encontrado: ..."}` | `RecursoNaoEncontradoException` |
 | Falha inesperada | `500` | `{"erro": "..."}` | `RuntimeException` |
 
 Todas as conversões ficam em `exception/GlobalExceptionHandler` (`@RestControllerAdvice`).
 
-> Observação: hoje o `404` de recurso inexistente vem do `Optional.empty()` dos controllers; a `RecursoNaoEncontradoException` está implementada e testada como caminho alternativo para quando a regra migrar para o service.
+> Observação: o `404` de *doação/usuário inexistente por id* vem do `Optional.empty()` no
+> controller; o `404` de *doador inexistente na gravação* vem de `RecursoNaoEncontradoException`,
+> lançada no service porque a regra só pode ser verificada no momento de salvar.
 
 ## 5. Segurança
 
@@ -86,7 +93,7 @@ Todas as conversões ficam em `exception/GlobalExceptionHandler` (`@RestControll
 
 ## 8. Testes
 
-93 testes JUnit 5 com Mockito e MockMvc, sem banco real:
+105 testes JUnit 5 com Mockito e MockMvc, sem banco real:
 
 | Tipo | Classes | O que cobre |
 |---|---|---|
@@ -99,7 +106,7 @@ Todas as conversões ficam em `exception/GlobalExceptionHandler` (`@RestControll
 | Unitário | `DemoDataSeederTest` | seed idempotente e tolerância a banco fora do ar |
 | Unitário | `MongoPingHealthIndicatorTest` | health `UP` no ping e `DOWN` com a causa |
 
-Cobertura medida pelo JaCoCo com gate de 70%, **sem exclusão de pacotes**: 98,7% de linhas (463/469) e 98,0% de branches. O relatório sai em `target/site/jacoco/index.html`. As 6 linhas descobertas são o `MongoUnavailableHandler`, cujo efeito (503) é verificado no ambiente publicado.
+Cobertura medida pelo JaCoCo com gate de 70%, **sem exclusão de pacotes**: 98,8% de linhas (508/514) e 98,4% de branches (60/61). O relatório sai em `target/site/jacoco/index.html`. As 6 linhas descobertas são o `MongoUnavailableHandler` (3), trechos de `AepApplication` e `CadastroCli` (2+1), cujo efeito é verificado no ambiente publicado.
 
 ## 9. Decisões de projeto
 
