@@ -103,23 +103,27 @@ usuarios                          doacoes
 | `GET /api/doacoes` | `find({})` |
 | `GET /api/doacoes/{id}` | `findOne({_id})` |
 | `GET /api/doacoes/usuario/{usuarioId}` | `find({usuarioId})` |
-| `GET /api/doacoes/resumo` | `find({})` + agregação em memória (total, soma, itens distintos) |
+| `GET /api/doacoes/resumo` | aggregation `$group`: total de doações, soma das quantidades e itens distintos (`$addToSet` + `$size`) |
+| `GET /api/doacoes/resumo/por-item` | aggregation `$group` por `item` + `$sort` pela quantidade |
 | `PUT` / `DELETE /api/doacoes/{id}` | `save` / `deleteOne` |
 
-> O `resumo` hoje lê todos os documentos e agrega no Java. A versão com *aggregation pipeline* (`$group`) está no backlog (issue #28) — é a evolução natural para uso efetivo de NoSQL.
+> Os dois resumos rodam no servidor MongoDB (`aggregation pipeline`), sem trazer os documentos
+> para a aplicação. Antes o cálculo era feito em memória com `findAll()`.
 
 ## 7. Índices
 
-Estado atual: **nenhum índice explícito** além do `_id` criado automaticamente.
+Criados automaticamente na subida da aplicação (`spring.data.mongodb.auto-index-creation=true`)
+a partir das anotações de `Doacao`:
 
-| Índice | Campo | Quando criar |
-|---|---|---|
-| `usuarioId_1` | `doacoes.usuarioId` | consultas por usuário (`findByUsuarioId`) |
-| `item_1` | `doacoes.item` | filtros e agrupamento por item |
-| `email_1` (único) | `usuarios.email` | impedir e-mail duplicado |
-| `data_doacao_1` | `doacoes.data_doacao` | relatórios por período |
+| Índice | Campos | Origem | Serve para |
+|---|---|---|---|
+| `_id_` | `doacoes._id` | MongoDB | busca por id |
+| `usuarioId` | `doacoes.usuarioId` | `@Indexed` | `findByUsuarioId` e validação do doador |
+| `item` | `doacoes.item` | `@Indexed` | filtros e agrupamento por item |
+| `usuario_data` | `doacoes.usuarioId` + `doacoes.data_doacao` (desc) | `@CompoundIndex` | doações de um doador em ordem cronológica |
 
-A criação está no backlog (issue #29). No Spring Data, basta anotar o campo com `@Indexed` / `@CompoundIndex` — o índice é criado no primeiro uso da aplicação.
+Ainda no backlog: `email_1` único em `usuarios.email` (impedir e-mail duplicado) e
+`data_doacao_1` para relatórios por período.
 
 ## 8. Inspeção rápida do banco
 

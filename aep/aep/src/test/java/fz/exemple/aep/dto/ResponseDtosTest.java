@@ -67,4 +67,27 @@ class ResponseDtosTest {
         assertEquals(5, response.getQuantidade());
         assertEquals(LocalDate.of(2026, 1, 1), response.getDataDoacao());
     }
+
+    @Test
+    @DisplayName("ResumoPorItemResponse mantem os valores do construtor")
+    void resumoPorItemResponse_construtor() {
+        ResumoPorItemResponse response = new ResumoPorItemResponse("Arroz", 12, 2L);
+
+        assertEquals("Arroz", response.getItem());
+        assertEquals(12, response.getQuantidadeTotal());
+        assertEquals(2L, response.getTotalDoacoes());
+    }
+
+    @Test
+    @DisplayName("ResumoPorItemResponse aceita setters")
+    void resumoPorItemResponse_setters() {
+        ResumoPorItemResponse response = new ResumoPorItemResponse();
+        response.setItem("Feijao");
+        response.setQuantidadeTotal(5);
+        response.setTotalDoacoes(1L);
+
+        assertEquals("Feijao", response.getItem());
+        assertEquals(5, response.getQuantidadeTotal());
+        assertEquals(1L, response.getTotalDoacoes());
+    }
 }

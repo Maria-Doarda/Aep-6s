@@ -2,7 +2,9 @@ package fz.exemple.aep.controllers;
 
 import fz.exemple.aep.config.SecurityConfig;
 import fz.exemple.aep.dto.DoacaoResponse;
+import fz.exemple.aep.dto.ResumoPorItemResponse;
 import fz.exemple.aep.dto.ResumoResponse;
+import fz.exemple.aep.exception.RecursoNaoEncontradoException;
 import fz.exemple.aep.services.DoacaoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,6 +174,50 @@ class DoacaoControllerTest {
                 .andExpect(jsonPath("$.totalDoacoes").value(2))
                 .andExpect(jsonPath("$.totalQuantidade").value(15))
                 .andExpect(jsonPath("$.itensDistintos").value(2));
+    }
+
+    @Test
+    void deveRetornarResumoAgrupadoPorItem() throws Exception {
+        when(doacaoService.resumoPorItem()).thenReturn(List.of(
+                new ResumoPorItemResponse("Arroz", 12, 2L),
+                new ResumoPorItemResponse("Feijão", 5, 1L)
+        ));
+
+        mvc.perform(get("/api/doacoes/resumo/por-item"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].item").value("Arroz"))
+                .andExpect(jsonPath("$[0].quantidadeTotal").value(12))
+                .andExpect(jsonPath("$[0].totalDoacoes").value(2))
+                .andExpect(jsonPath("$[1].item").value("Feijão"))
+                .andExpect(jsonPath("$[1].quantidadeTotal").value(5));
+    }
+
+    @Test
+    void deveRetornarListaVaziaNoResumoPorItemSemDoacoes() throws Exception {
+        when(doacaoService.resumoPorItem()).thenReturn(List.of());
+
+        mvc.perform(get("/api/doacoes/resumo/por-item"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    void deveRetornar404QuandoODoadorNaoExistir() throws Exception {
+        when(doacaoService.criar(any()))
+                .thenThrow(new RecursoNaoEncontradoException("Doador nao encontrado: fantasma"));
+
+        mvc.perform(post("/api/doacoes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "usuarioId": "fantasma",
+                                  "item": "Arroz",
+                                  "quantidade": 10
+                                }
+                                """))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.erro").value("Doador nao encontrado: fantasma"));
     }
 
     @Test

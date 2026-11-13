@@ -5,8 +5,8 @@
 ![Java 17](https://img.shields.io/badge/Java-17-blue)
 ![Spring Boot 4.1.0](https://img.shields.io/badge/Spring%20Boot-4.1.0-green)
 ![MongoDB 7.0](https://img.shields.io/badge/MongoDB-7.0-green)
-![Tests passing](https://img.shields.io/badge/tests-93%20passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-98%2C7%25%20lines%20%28all%20packages%29-brightgreen)
+![Tests passing](https://img.shields.io/badge/tests-105%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-98%2C8%25%20lines%20%28all%20packages%29-brightgreen)
 ![Build](https://img.shields.io/badge/build-mvn%20clean%20verify-blue)
 
 > Spring Boot 4.1.0 + Java 17 + MongoDB (`poc_doacoes`) — API REST para cadastrar doadores (`Usuario`) e doações de alimentos (`Doacao`), com tela web servida pela própria aplicação.
@@ -21,7 +21,7 @@ A versão publicada abre direto na tela de registro: **<https://aep-6s-doacao-de
 |---|---|
 | Tela de doações | `/` |
 | API de doadores | `/api/usuarios` |
-| API de doações | `/api/doacoes` · resumo em `/api/doacoes/resumo` |
+| API de doações | `/api/doacoes` · resumo em `/api/doacoes/resumo` · por item em `/api/doacoes/resumo/por-item` |
 | Status da aplicação | `/actuator/health` |
 
 - A **primeira visita** depois de um período sem acesso pode levar até um minuto: no plano gratuito do Render a aplicação hiberna e precisa acordar. A tela avisa quando isso acontece.
@@ -34,14 +34,14 @@ A versão publicada abre direto na tela de registro: **<https://aep-6s-doacao-de
 
 O desperdício de alimentos convive com a insegurança alimentar nos centros urbanos: sobra comida de um lado e falta do outro por falta de um canal simples de doação.
 
-O projeto atende doadores (pessoas e estabelecimentos) e ONGs e bancos de alimentos que recebem e redistribuem as doações, apoiando o ODS 2 (Fome Zero) nas metas 2.1 e 2.2. O `GET /api/doacoes/resumo` acompanha os indicadores: total de doações, quantidade e itens distintos.
+O projeto atende doadores (pessoas e estabelecimentos) e ONGs e bancos de alimentos que recebem e redistribuem as doações, apoiando o ODS 2 (Fome Zero) nas metas 2.1 e 2.2. O `GET /api/doacoes/resumo` acompanha os indicadores: total de doações, quantidade e itens distintos — calculados no próprio MongoDB com *aggregation pipeline*; o `GET /api/doacoes/resumo/por-item` abre o mesmo dado por item.
 
 ---
 
 ## O que o projeto faz
 
 - **Usuários (doadores):** criar, listar, buscar, atualizar e remover. Criar retorna 201 com o endereço do novo recurso; atualizar retorna 200 ou 404; remover retorna 204 e pode ser repetida sem erro.
-- **Doações:** criar, listar, buscar por ID, listar por usuário e ver o resumo. Mesmos códigos da lista acima.
+- **Doações:** criar, listar, buscar por ID, listar por usuário e ver o resumo (geral e por item). O `usuarioId` é validado na gravação: doador inexistente retorna 404 e a doação não é criada. Mesmos códigos da lista acima.
 - **Tela web:** duas páginas servidas pela própria aplicação, sem framework, sem build e sem CORS. O painel (`/`) traz os totais do resumo, o cadastro de doadores com endereços dinâmicos e o registro e a exclusão de doações; a página pública (`/doar.html`) guia a doação em quatro etapas. Ambas usam `fetch` nos mesmos endpoints.
 - **Terminal (alternativa à tela):** menu interativo no console para cadastrar e listar, rodando junto com a API.
 - Dados inválidos retornam 400, IDs inexistentes retornam 404. Não precisa de login.
@@ -144,9 +144,10 @@ Para parar: `Ctrl + C` no terminal da aplicação e `docker compose down` (adici
 | `GET` | `/api/usuarios/{id}` | `200` / `404` | Busca por ID |
 | `PUT` | `/api/usuarios/{id}` | `200` / `404` | Atualiza |
 | `DELETE` | `/api/usuarios/{id}` | `204` | Remove |
-| `POST` | `/api/doacoes` | `201 + Location` | Cria doação |
+| `POST` | `/api/doacoes` | `201 + Location` / `404` | Cria doação (o `usuarioId` precisa existir) |
 | `GET` | `/api/doacoes` | `200` | Lista todas |
-| `GET` | `/api/doacoes/resumo` | `200` | Total, quantidade e itens distintos |
+| `GET` | `/api/doacoes/resumo` | `200` | Total, quantidade e itens distintos (aggregation `$group`) |
+| `GET` | `/api/doacoes/resumo/por-item` | `200` | Quantidade e nº de doações por item (aggregation `$group` + `$sort`) |
 | `GET` | `/api/doacoes/{id}` | `200` / `404` | Busca por ID |
 | `GET` | `/api/doacoes/usuario/{usuarioId}` | `200` | Lista por usuário |
 | `PUT` | `/api/doacoes/{id}` | `200` / `404` | Atualiza |
@@ -192,7 +193,7 @@ Detalhes, notas de release e comandos para reproduzir a cobertura: [`docs/RELEAS
 
 ```bash
 # na pasta aep/aep
-.\mvnw.cmd clean verify   # Windows — 93 testes, exige cobertura mínima de 70%
+.\mvnw.cmd clean verify   # Windows — 105 testes, exige cobertura mínima de 70%
 ./mvnw clean verify        # Mac/Linux
 ```
 
@@ -200,9 +201,9 @@ Testes JUnit com Mockito e MockMvc (`src/test`: controllers, services, mappers, 
 
 | Métrica | Valor |
 |---|---|
-| Testes | **93** |
-| Linhas cobertas | **98,7%** (463/469) |
-| Branches cobertos | **98,0%** (50/51) |
+| Testes | **105** |
+| Linhas cobertas | **98,8%** (508/514) |
+| Branches cobertos | **98,4%** (60/61) |
 
 O relatório sai em `aep/aep/target/site/jacoco/index.html` e o log mostra `All coverage checks have been met`.
 

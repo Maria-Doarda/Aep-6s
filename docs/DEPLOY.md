@@ -143,6 +143,7 @@ $base = "https://aep-6s-doacao-de-alimentos.onrender.com"
 Invoke-RestMethod "$base/actuator/health"        # {"status":"UP"}
 Invoke-RestMethod "$base/api/usuarios" | ConvertTo-Json -Depth 4
 Invoke-RestMethod "$base/api/doacoes/resumo"     # totalDoacoes / totalQuantidade / itensDistintos
+Invoke-RestMethod "$base/api/doacoes/resumo/por-item"  # quantidadeTotal e totalDoacoes por item
 
 # criar um doador
 Invoke-RestMethod "$base/api/usuarios" -Method Post -ContentType "application/json" -Body (@{
@@ -161,6 +162,8 @@ Checklist do que deve funcionar:
 - [ ] registrar doação → os três números do resumo mudam
 - [ ] e-mail inválido → mensagem no campo, não erro genérico
 - [ ] excluir doador/doação → linha some e o resumo recalcula
+- [ ] `GET /api/doacoes/resumo/por-item` devolve uma linha por item, da maior para a menor
+- [ ] `POST /api/doacoes` com `usuarioId` inexistente responde `404` (doação órfã não entra)
 - [ ] `/actuator/health` responde `UP`
 
 ---

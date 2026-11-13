@@ -1,7 +1,7 @@
 # Quadro de tarefas — AEP6S (ODS 2)
 
 > Metodologia de trabalho da equipe. Cada card é uma tarefa executada ou prevista, com **evidência** (branch/commit) e **data**.
-> Atualizado em **11/11/2026**. Equipe: Gabriel de Oliveira Gnoatto, Maria Eduarda Pereira Ribeiro, Sophia Machado Silva.
+> Atualizado em **13/11/2026**. Equipe: Gabriel de Oliveira Gnoatto, Maria Eduarda Pereira Ribeiro, Sophia Machado Silva.
 
 **Colunas:** `Backlog` → `A fazer` → `Em andamento` → `Concluído`
 Cards concluídos são empilhados na coluna mais à direita, do mais antigo para o mais recente.
@@ -22,10 +22,10 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | C2 | [#7](https://github.com/Maria-Doarda/Aep-6s/issues/7) | C12 | [#17](https://github.com/Maria-Doarda/Aep-6s/issues/17) | A2 | [#25](https://github.com/Maria-Doarda/Aep-6s/issues/25) |
 | C3 | [#8](https://github.com/Maria-Doarda/Aep-6s/issues/8) | C13 | [#18](https://github.com/Maria-Doarda/Aep-6s/issues/18) | B1 | [#26](https://github.com/Maria-Doarda/Aep-6s/issues/26) |
 | C4 | [#9](https://github.com/Maria-Doarda/Aep-6s/issues/9) | C14 | [#19](https://github.com/Maria-Doarda/Aep-6s/issues/19) | B2 | [#27](https://github.com/Maria-Doarda/Aep-6s/issues/27) |
-| C5 | [#10](https://github.com/Maria-Doarda/Aep-6s/issues/10) | C15 | [#20](https://github.com/Maria-Doarda/Aep-6s/issues/20) | B3 | [#28](https://github.com/Maria-Doarda/Aep-6s/issues/28) |
-| C6 | [#11](https://github.com/Maria-Doarda/Aep-6s/issues/11) | C16 | [#21](https://github.com/Maria-Doarda/Aep-6s/issues/21) | B4 | [#29](https://github.com/Maria-Doarda/Aep-6s/issues/29) |
+| C5 | [#10](https://github.com/Maria-Doarda/Aep-6s/issues/10) | C15 | [#20](https://github.com/Maria-Doarda/Aep-6s/issues/20) | C27 | [#28](https://github.com/Maria-Doarda/Aep-6s/issues/28) |
+| C6 | [#11](https://github.com/Maria-Doarda/Aep-6s/issues/11) | C16 | [#21](https://github.com/Maria-Doarda/Aep-6s/issues/21) | C28 | [#29](https://github.com/Maria-Doarda/Aep-6s/issues/29) |
 | C7 | [#12](https://github.com/Maria-Doarda/Aep-6s/issues/12) | C17 | [#22](https://github.com/Maria-Doarda/Aep-6s/issues/22) | B5 | [#30](https://github.com/Maria-Doarda/Aep-6s/issues/30) |
-| C8 | [#13](https://github.com/Maria-Doarda/Aep-6s/issues/13) | C18 | [#23](https://github.com/Maria-Doarda/Aep-6s/issues/23) | B6 | [#31](https://github.com/Maria-Doarda/Aep-6s/issues/31) |
+| C8 | [#13](https://github.com/Maria-Doarda/Aep-6s/issues/13) | C18 | [#23](https://github.com/Maria-Doarda/Aep-6s/issues/23) | C29 | [#31](https://github.com/Maria-Doarda/Aep-6s/issues/31) |
 | C9 | [#14](https://github.com/Maria-Doarda/Aep-6s/issues/14) | | | | |
 | C10 | [#15](https://github.com/Maria-Doarda/Aep-6s/issues/15) | | | B8 | [#33](https://github.com/Maria-Doarda/Aep-6s/issues/33) |
 | C19 | [#24](https://github.com/Maria-Doarda/Aep-6s/issues/24) | | | B9 | [#34](https://github.com/Maria-Doarda/Aep-6s/issues/34) |
@@ -69,6 +69,9 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | C24 | Robustez do banco: health check próprio, handler de 503 e `compose.yaml` com `healthcheck`/`restart` *(era B8)* | Gabriel · Maria | 12/11 | `MongoPingHealthIndicator` + teste, `MongoUnavailableHandler`, `compose.yaml` (PR #41) |
 | C25 | Interface web final: painel com menu lateral e página pública de doação em 4 etapas | Sophia | 13/11 | `index.html`, `doar.html`, `doar.js`, `doar.css` (PR #42) |
 | C26 | Fechar a 2ª entrega: números finais, tag `v2.0-entrega2` e Release no GitHub *(era B1)* | Gabriel | 13/11 | 93 testes · 98,7% de linhas · tag `v2.0-entrega2` · Release |
+| C27 | `resumo` por aggregation pipeline (`$group` + `$addToSet`/`$size`) e endpoint `GET /api/doacoes/resumo/por-item` *(era B3)* | Gabriel | 13/11 | `DoacaoService` com `MongoTemplate.aggregate`, `ResumoPorItemResponse`; 5 testes de service e 2 de controller |
+| C28 | Índices declarativos no modelo: `@Indexed` em `usuarioId`/`item` e `@CompoundIndex` `usuario_data` *(era B4)* | Gabriel | 13/11 | `models/Doacao.java`, `spring.data.mongodb.auto-index-creation=true`; validado no Mongo local (`listIndexes` com os três índices) |
+| C29 | Validar a existência do `usuarioId` antes de gravar a doação (fim da doação órfã) *(era B6)* | Gabriel | 13/11 | `DoacaoService.exigirDoador` + `UsuarioRepository.existsById`; POST com doador inexistente responde `404` |
 
 ---
 
@@ -84,10 +87,7 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 
 | # | Card | Prioridade | Critério da AEP atendido |
 |---|---|---|---|
-| B3 | `resumo` via aggregation pipeline (`$group`) + endpoint `resumo/por-item` | Média | Uso efetivo de NoSQL |
-| B4 | Índices (`@Indexed` em `usuarioId`/`item`, `@CompoundIndex`) | Média | Modelagem NoSQL |
 | B5 | Filtros combinados em `GET /api/doacoes` (`item`, `usuarioId`, `dataInicio`) | Média | Evolução funcional |
-| B6 | Validar existência do `usuarioId` ao criar doação (hoje aceita doação órfã) | Média | Relacionamento entre coleções |
 | B9 | Fixar a versão do JDK no `.mvn/jvm.config` para build reproduzível | Baixa | Build reproduzível |
 
 ---
@@ -115,6 +115,7 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | 11/11 | **Merge da `main`** no `Gabriel` antes do PR: a equipe subiu o JaCoCo **0.8.16**, que elimina os avisos de `major version 69` do JDK 25 — **#34 resolvida**. `clean verify` segue com 91 testes e cobertura aprovada |
 | 12/11 | **A3 → C23**: ambiente publicado e validado ponta a ponta no Render (health `UP` após a correção do health check). **B8 → C24**: `MongoPingHealthIndicator`, `MongoUnavailableHandler` e `compose.yaml` com `healthcheck`/`restart` (PR #41) |
 | 13/11 | **C25**: interface web final no ar — painel com menu lateral e página pública de doação em 4 etapas (PR #42). **B1 → C26**: números finais (93 testes, 98,7% de linhas), tag `v2.0-entrega2` e Release publicada |
+| 13/11 | **B3 → C27**, **B4 → C28** e **B6 → C29**: resumo migrado para aggregation `$group` no servidor, endpoint `resumo/por-item`, índices declarativos criados na subida e validação do doador no `POST`. **105 testes · 98,8% de linhas · 98,4% de branches**; backlog fica com B5 e B9 |
 
 ---
 

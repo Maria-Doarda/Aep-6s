@@ -6,7 +6,7 @@ Este arquivo registra o que cada versão contém e como reproduzir a evidência 
 | Tag | Entrega | Commit base | Data | Conteúdo |
 |---|---|---|---|---|
 | `v1.0-entrega1` | 1ª entrega | `4574ae3` | 11/09/2026 | CRUD de `Usuario` e `Doacao`, CLI, `GET /resumo`, 55 testes, JaCoCo com gate de 70%, README |
-| `v2.0-entrega2` | 2ª entrega | commit do fechamento (a própria tag) | 13/11/2026 | PoC final: tela web, ambiente online, documentação técnica, quadro de tarefas, 93 testes e 98,7% de cobertura |
+| `v2.0-entrega2` | 2ª entrega | commit do fechamento (a própria tag) | 13/11/2026 | PoC final: tela web, ambiente online, documentação técnica, quadro de tarefas, aggregation `$group`, índices declarativos, 105 testes e 98,8% de cobertura |
 
 ---
 
@@ -49,9 +49,12 @@ documentação técnica e quadro de tarefas.
 | Interface web | painel em `/` (resumo, doadores com endereços dinâmicos, doações) e página pública em `/doar.html` (4 etapas) — HTML, CSS e JS puros, sem build e sem CORS |
 | Ambiente publicado | `Dockerfile` multi-stage, perfil `prod`, seed `demo`, `render.yaml`, MongoDB Atlas M0 e `docs/DEPLOY.md` |
 | Robustez | health check próprio (`MongoPingHealthIndicator`) e `MongoUnavailableHandler` devolvendo 503 com `ProblemDetail` quando o banco cai |
+| Uso efetivo de NoSQL | `GET /api/doacoes/resumo` e `GET /api/doacoes/resumo/por-item` calculados no servidor com *aggregation pipeline* (`$group`, `$addToSet` + `$size`, `$sort`), sem trazer documentos para a aplicação |
+| Índices | `@Indexed` em `usuarioId` e `item` + `@CompoundIndex` `usuario_data`, criados na subida (`spring.data.mongodb.auto-index-creation=true`) |
+| Integridade | `POST` e `PUT /api/doacoes` recusam `usuarioId` inexistente com `404` — não entra mais doação órfã |
 | Documentação técnica | `docs/ARQUITETURA.md` (camadas, fluxo, erros) e `docs/MODELAGEM.md` (coleções, JSON, índices) |
 | Gestão | `docs/KANBAN.md` + quadro no GitHub Projects, com 29 issues e histórico de movimentação |
-| Qualidade | **93 testes**, **98,7% de linhas** (463/469) e **98,0% de branches** (50/51), sem excluir pacotes |
+| Qualidade | **105 testes**, **98,8% de linhas** (508/514) e **98,4% de branches** (60/61), sem excluir pacotes |
 
 ### Funcionalidades novas em relação à `v1.0-entrega1`
 
@@ -59,8 +62,11 @@ documentação técnica e quadro de tarefas.
 |---|---|---|
 | Interface | menu no terminal | painel web + página pública de doação |
 | Execução | `localhost` | publicado no Render, dados no Atlas |
-| Testes | 55 | **93** |
-| Cobertura de linhas | 95,2% (sem o pacote `cli`) | **98,7%** (todos os pacotes) |
+| Consultas | resumo calculado em memória no Java | resumo e resumo por item via *aggregation pipeline* no MongoDB |
+| Modelo físico | só o índice `_id` | `@Indexed` em `usuarioId`/`item` + composto `usuario_data` |
+| Integridade | doação aceitava `usuarioId` inexistente | `404` quando o doador não existe |
+| Testes | 55 | **105** |
+| Cobertura de linhas | 95,2% (sem o pacote `cli`) | **98,8%** (todos os pacotes) |
 | Documentação | README | + arquitetura, modelagem, deploy, releases e kanban |
 | Operação | — | health check, handler de 503, `compose.yaml` com healthcheck e `restart` |
 
@@ -75,7 +81,7 @@ Docker multi-stage · Render · HTML/CSS/JS sem framework.
 ```powershell
 cd aep/aep
 .\mvnw.cmd clean verify
-# Tests run: 93, Failures: 0, Errors: 0, Skipped: 0
+# Tests run: 105, Failures: 0, Errors: 0, Skipped: 0
 # All coverage checks have been met.
 # BUILD SUCCESS
 # relatório: target/site/jacoco/index.html
@@ -88,9 +94,9 @@ demonstração da PoC, as tecnologias, os testes com cobertura e os resultados a
 
 ### Fora do escopo desta versão
 
-Continuam no backlog do `docs/KANBAN.md` (B3–B6): `resumo` por aggregation pipeline,
-índices compostos, filtros combinados em `GET /api/doacoes` e validação da existência do
-`usuarioId` ao criar doação.
+Continuam no backlog do `docs/KANBAN.md` (B5 e B9): filtros combinados em
+`GET /api/doacoes` (`item`, `usuarioId`, `dataInicio`) e a fixação da versão do JDK no
+`.mvn/jvm.config` para build reproduzível.
 
 **Tag:**
 
