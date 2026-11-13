@@ -1,19 +1,29 @@
 package fz.exemple.aep.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDate;
 
 @Document(collection = "doacoes")
+@CompoundIndex(
+        name = "usuario_data",
+        def = "{'usuarioId': 1, 'data_doacao': -1}"
+)
 public class Doacao {
 
     @Id
     private String id;
 
+    @Indexed
     private String usuarioId;
+
+    @Indexed
     private String item;
+
     private int quantidade;
 
     @Field("data_doacao")

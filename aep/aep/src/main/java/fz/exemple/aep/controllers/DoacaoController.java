@@ -3,6 +3,7 @@ package fz.exemple.aep.controllers;
 import fz.exemple.aep.dto.DoacaoCreateRequest;
 import fz.exemple.aep.dto.DoacaoResponse;
 import fz.exemple.aep.dto.DoacaoUpdateRequest;
+import fz.exemple.aep.dto.ResumoPorItemResponse;
 import fz.exemple.aep.dto.ResumoResponse;
 import fz.exemple.aep.services.DoacaoService;
 import jakarta.validation.Valid;
@@ -45,6 +46,11 @@ public class DoacaoController {
     @GetMapping("/resumo")
     public ResponseEntity<ResumoResponse> resumo() {
         return ResponseEntity.ok(doacaoService.resumo());
+    }
+
+    @GetMapping("/resumo/por-item")
+    public ResponseEntity<List<ResumoPorItemResponse>> resumoPorItem() {
+        return ResponseEntity.ok(doacaoService.resumoPorItem());
     }
 
     @GetMapping("/{id}")
