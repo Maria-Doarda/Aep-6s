@@ -26,7 +26,7 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | C6 | [#11](https://github.com/Maria-Doarda/Aep-6s/issues/11) | C16 | [#21](https://github.com/Maria-Doarda/Aep-6s/issues/21) | B4 | [#29](https://github.com/Maria-Doarda/Aep-6s/issues/29) |
 | C7 | [#12](https://github.com/Maria-Doarda/Aep-6s/issues/12) | C17 | [#22](https://github.com/Maria-Doarda/Aep-6s/issues/22) | B5 | [#30](https://github.com/Maria-Doarda/Aep-6s/issues/30) |
 | C8 | [#13](https://github.com/Maria-Doarda/Aep-6s/issues/13) | C18 | [#23](https://github.com/Maria-Doarda/Aep-6s/issues/23) | B6 | [#31](https://github.com/Maria-Doarda/Aep-6s/issues/31) |
-| C9 | [#14](https://github.com/Maria-Doarda/Aep-6s/issues/14) | | | B7 | — |
+| C9 | [#14](https://github.com/Maria-Doarda/Aep-6s/issues/14) | | | | |
 | C10 | [#15](https://github.com/Maria-Doarda/Aep-6s/issues/15) | | | B8 | [#33](https://github.com/Maria-Doarda/Aep-6s/issues/33) |
 | C19 | [#24](https://github.com/Maria-Doarda/Aep-6s/issues/24) | | | B9 | [#34](https://github.com/Maria-Doarda/Aep-6s/issues/34) |
 | C20 | [#27](https://github.com/Maria-Doarda/Aep-6s/issues/27) | | | C21 | [#36](https://github.com/Maria-Doarda/Aep-6s/issues/36) |
@@ -88,7 +88,6 @@ Cada card também existe como **issue** no repositório, com label e milestone:
 | B4 | Índices (`@Indexed` em `usuarioId`/`item`, `@CompoundIndex`) | Média | Modelagem NoSQL |
 | B5 | Filtros combinados em `GET /api/doacoes` (`item`, `usuarioId`, `dataInicio`) | Média | Evolução funcional |
 | B6 | Validar existência do `usuarioId` ao criar doação (hoje aceita doação órfã) | Média | Relacionamento entre coleções |
-| B7 | `PUT /api/usuarios/{id}/enderecos` para manipular o subdocumento | Baixa | Documento complexo (2º semestre) |
 | B9 | Fixar a versão do JDK no `.mvn/jvm.config` para build reproduzível | Baixa | Build reproduzível |
 
 ---

@@ -88,9 +88,9 @@ demonstração da PoC, as tecnologias, os testes com cobertura e os resultados a
 
 ### Fora do escopo desta versão
 
-Continuam no backlog do `docs/KANBAN.md` (B3–B7): `resumo` por aggregation pipeline,
-índices compostos, filtros combinados em `GET /api/doacoes`, validação da existência do
-`usuarioId` ao criar doação e `PUT` do subdocumento de endereços.
+Continuam no backlog do `docs/KANBAN.md` (B3–B6): `resumo` por aggregation pipeline,
+índices compostos, filtros combinados em `GET /api/doacoes` e validação da existência do
+`usuarioId` ao criar doação.
 
 **Tag:**
 
